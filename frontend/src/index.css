@@ -1,78 +1,603 @@
 * {
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, sans-serif;
 }
 
-body {
-    background-color: rgb(218, 213, 213);
+/* Define our Theme Colors */
+.dark-theme {
+  --bg-color: #0f1115;
+  --text-color: #ffffff;
+  --border-color: #2a2d35;
+  --input-bg: #1a1d24;
+  --text-muted: #a0aabf;
 }
 
-.projectCard {
-    border-radius: 5px;
-    border: 1px solid gray;
-    width: 270px;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 20px;
-    background-color: rgb(255, 255, 255);
+.light-theme {
+  --bg-color: #f9fafb;
+  --text-color: #111827;
+  --border-color: #e5e7eb;
+  --input-bg: #ffffff;
+  --text-muted: #4b5563;
 }
 
-.projectCard:hover {
-    transform: scale(1.02);
-    background-color: rgb(233, 233, 232);
-    border-color: rgb(125, 125, 225);
+/* Apply the variables */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease; /* Makes the color switch smooth */
 }
 
-.bigDiv {
-    padding: '20px';
-    font-family: 'Arial';
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 4rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.allProjects {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    /* 3 colonnes égales */
-    gap: 10px;
-    /* Espacement de 20px entre les boîtes */
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  color: var(--text-muted);
 }
 
-.modal {
-    position: fixed;
-    /* Reste en place */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Fond opaque */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+.nav-links li:hover {
+  color: var(--text-color);
+  cursor: pointer;
 }
 
-.modal-content {
-    background-color: white;
-    margin: 15% auto;
-    /* Centrage */
-    padding: 20px;
-    width: 50%;
-    border-radius: 5px;
-    border: 2px solid gray;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.search-and-theme {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
-.btnRetour {
-    background-color: rgb(255, 62, 62);
-    border-radius: 5px;
-    width: 120px;
-    height: 30px;
+.search-and-theme input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  outline: none;
 }
 
-.btnRetour:hover {
-    transform: scale(1.01);
-    background-color: rgb(212, 90, 90);
+/* New style for our button */
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+/* Container for the right-side actions */
+.action-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: 1rem;
+}
+
+/* GitHub Link Styles */
+.github-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.github-link:hover {
+  color: var(--text-color);
+}
+
+/* Make sure all our new SVG icons are sized nicely */
+.icon {
+  font-size: 1.25rem;
+}
+/* --- Footer Styles --- */
+.footer {
+  border-top: 1px solid var(--border-color);
+  padding: 4rem 4rem 2rem 4rem;
+  /* This pushes the footer to the bottom even if the page content is short */
+  margin-top: auto; 
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  flex-wrap: wrap; /* Allows it to stack nicely on smaller screens */
+  gap: 2rem;
+}
+
+/* Brand Section */
+.footer-brand {
+  max-width: 400px;
+}
+
+.footer-brand p {
+  color: var(--text-muted);
+  margin: 1rem 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1.2rem;
+  color: var(--text-muted);
+}
+
+.social-icons .icon {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.social-icons .icon:hover {
+  color: var(--text-color);
+}
+
+/* Link Columns */
+.footer-links {
+  display: flex;
+  gap: 5rem;
+}
+
+.link-column h4 {
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.link-column ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.link-column li {
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.link-column li:hover {
+  color: var(--text-color);
+}
+
+/* Bottom Copyright Section */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.legal-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.legal-links span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.legal-links span:hover {
+  color: var(--text-color);
+}
+/* --- Hero Section Styles --- */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem 0 2rem;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%, #ff0844 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-content p {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* --- Graph Animation Styles --- */
+.hero-graph-container {
+  width: 100%;
+  max-width: 900px;
+  height: 300px;
+  margin-top: 3rem;
+  position: relative;
+}
+
+.pulse-graph {
+  width: 100%;
+  height: 100%;
+  /* Makes the whole graph slowly float up and down */
+  animation: float 6s ease-in-out infinite; 
+}
+
+/* The magic trick that draws the line */
+.animated-line {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: drawLine 3s ease-out forwards;
+}
+
+.graph-fill {
+  opacity: 0;
+  animation: fadeIn 2s ease-in forwards;
+  animation-delay: 1.5s; /* Wait for the line to draw halfway before showing gradient */
+}
+
+/* Keyframes define the steps of our animations */
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+/* --- Search Bar Styles --- */
+.search-container {
+  position: relative; /* This allows us to absolute-position the icon inside it */
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem; /* Push it slightly from the left edge */
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.search-container input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  /* Top/Bottom padding 0.5rem, Right 1rem, Left 2.5rem to make room for the icon! */
+  padding: 0.5rem 1rem 0.5rem 2.5rem; 
+  border-radius: 6px;
+  outline: none;
+  width: 280px; /* Gives the search bar a nice consistent width */
+  transition: border-color 0.2s ease;
+}
+/* --- Trending Section Styles --- */
+.trending-section {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  color: var(--text-muted);
+}
+
+/* Auto-responsive grid magic! */
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* --- Repo Card Styles --- */
+.repo-card {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.repo-card:hover {
+  transform: translateY(-5px);
+  border-color: #3b82f6; /* Subtle blue glow on hover */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.repo-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.repo-title .author {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.repo-title h3 {
+  font-size: 1.25rem;
+  margin-top: 0.2rem;
+}
+
+.trend-badge {
+  color: #10b981; /* Green color for positive trend */
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.repo-description {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  min-height: 40px; /* Keeps cards a consistent height */
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.repo-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.repo-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Language Dots */
+.repo-lang {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lang-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* specific colors for specific languages */
+.python { background-color: #3572A5; }
+.typescript { background-color: #3178c6; }
+.go { background-color: #00ADD8; }
+
+.search-container input:focus {
+  border-color: #3b82f6; /* Adds a nice blue highlight when you click to type */
+}/* --- Modern Collections Section --- */
+.collections-section {
+  padding: 6rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(139, 92, 246, 0.1); /* Subtle purple */
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 50px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.icon-yellow {
+  color: #eab308;
+}
+
+/* --- The Pop-in Animation --- */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  opacity: 0; /* Start hidden */
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* --- Modern Card Styles --- */
+.modern-card {
+  position: relative;
+  border-radius: 1rem;
+  opacity: 0; /* Start hidden for animation */
+  animation: fadeInUp 0.5s ease-out forwards;
+  cursor: pointer;
+}
+
+/* This creates the soft glow effect behind the card on hover */
+.card-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 1rem;
+  opacity: 0;
+  filter: blur(15px);
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.modern-card:hover .card-glow {
+  opacity: 0.4;
+}
+
+/* The actual card container */
+.card-content {
+  position: relative;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  transition: border-color 0.3s ease;
+}
+
+.modern-card:hover .card-content {
+  border-color: transparent;
+}
+
+/* --- Gradient Themes --- */
+/* We define specific gradients for the icons and glows */
+.theme-purple { background: linear-gradient(135deg, #a855f7, #ec4899, #f43f5e); }
+.theme-blue { background: linear-gradient(135deg, #3b82f6, #06b6d4, #14b8a6); }
+.theme-green { background: linear-gradient(135deg, #22c55e, #10b981, #14b8a6); }
+.theme-orange { background: linear-gradient(135deg, #f97316, #f59e0b, #eab308); }
+.theme-indigo { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); }
+.theme-red { background: linear-gradient(135deg, #ef4444, #f43f5e, #ec4899); }
+
+.modern-icon-box {
+  display: inline-flex;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.modern-card:hover .modern-icon-box {
+  transform: scale(1.1);
+}
+
+/* --- Typography & Layout --- */
+.card-text h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* Nice text gradient on hover */
+.modern-card:hover .card-text h3 {
+  background: linear-gradient(to right, #a0aabf, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.card-text .description {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  height: 42px; /* Keeps consistent height */
+}
+
+.card-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-stats .count {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-stats .growth {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #22c55e; /* Green */
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.card-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  transition: color 0.3s ease;
+}
+
+.modern-card:hover .card-action {
+  color: var(--text-color);
+}
+
+.card-action .arrow {
+  transition: transform 0.3s ease;
+}
+
+.modern-card:hover .card-action .arrow {
+  transform: translateX(5px);
 }
