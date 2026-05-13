@@ -1,0 +1,248 @@
+/* ============================================
+   REPOSITORY OVERVIEW PAGE — Rich Aesthetics
+   ============================================ */
+
+.repo-details-page {
+    padding: 4rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* ── Top Navigation / Back Button ────────── */
+.nav-actions {
+    display: flex;
+    align-items: center;
+}
+
+.btn-retour {
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-retour:hover {
+    background-color: #3b82f6;
+    color: #ffffff;
+    transform: translateX(-4px);
+}
+
+/* ── Overview Header Banner ──────────────── */
+.overview-banner {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.overview-banner-left {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.repo-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-color);
+}
+
+.repo-avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.repo-info h1 {
+    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+    font-weight: 800;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.repo-info .description {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 650px;
+}
+
+.overview-banner-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.github-external-btn {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
+
+.github-external-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+}
+
+/* ── Dashboard Content Layout (Row) ──────── */
+.dashboard-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 2rem;
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-row {
+        flex-direction: column;
+    }
+}
+
+.chart-container {
+    flex: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+.globe-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--input-bg);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+}
+
+.globe-container h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: center;
+}
+
+/* ── Stats Highlights Banner ─────────────── */
+.stats-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.stat-item {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-3px);
+    border-color: #8b5cf6;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-details .value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+.stat-details .label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .repo-details-page {
+        padding: 2rem 1.5rem;
+    }
+    
+    .overview-banner {
+        padding: 1.5rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .overview-banner-right {
+        align-items: stretch;
+    }
+    
+    .github-external-btn {
+        justify-content: center;
+    }
+}

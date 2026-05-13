@@ -1,22 +1,25 @@
-import NavBar from './components/NavBar';
-import HeroSection from './components/HeroSection';
 import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom'; 
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import TrendingSection from './components/TrendingSection';
-import CollectionsSection from './components/CollectionsSection';
+import HomePage from './pages/HomePage';
+import RepoDetails from './pages/RepoDetails';
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const toggleTheme = ()=>{
-    setIsDarkMode(!isDarkMode);
-  }
+  const toggleTheme = () => setIsDarkMode(!isDarkMode); 
 
   return (
     <div className={`app-container ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
-      <NavBar isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
-      <HeroSection />
-      <TrendingSection />
-      <CollectionsSection />
+      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      
+      
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/repo/:repoId" element={<RepoDetails />} />
+      </Routes>
+      
+      {/* The Footer stays on every page */}
       <Footer />
     </div>
   );
