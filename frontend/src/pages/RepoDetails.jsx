@@ -7,7 +7,7 @@ import { FiStar, FiGitBranch, FiExternalLink, FiArrowLeft, FiActivity, FiCode } 
 import { FaGithub } from 'react-icons/fa';
 import '../css/RepoDetails.css';
 
-// Dictionnaire associant les codes ISO 2 des pays à leurs coordonnées centrales
+
 const countryCoordinates = {
   US: { lat: 37.0902, lng: -95.7129 },
   CN: { lat: 35.8617, lng: 104.1954 },
@@ -40,17 +40,17 @@ const countryCoordinates = {
   PL: { lat: 51.9194, lng: 19.1451 },
 };
 
-// Coordonnées mondiales par défaut pour animer le globe de façon spectaculaire
+
 const defaultHubLocations = [
-  { lat: 37.7749, lng: -122.4194, weight: 0.2 }, // San Francisco
-  { lat: 51.5074, lng: -0.1278, weight: 0.15 },   // London
-  { lat: 35.6762, lng: 139.6503, weight: 0.25 },  // Tokyo
-  { lat: 48.8566, lng: 2.3522, weight: 0.1 },    // Paris
-  { lat: 12.9716, lng: 77.5946, weight: 0.18 },   // Bangalore
-  { lat: -33.8688, lng: 151.2093, weight: 0.08 }, // Sydney
-  { lat: 31.2304, lng: 121.4737, weight: 0.22 },  // Shanghai
-  { lat: 52.5200, lng: 13.4050, weight: 0.12 },   // Berlin
-  { lat: 43.6532, lng: -79.3832, weight: 0.09 },  // Toronto
+  { lat: 37.7749, lng: -122.4194, weight: 0.2 }, 
+  { lat: 51.5074, lng: -0.1278, weight: 0.15 },   
+  { lat: 35.6762, lng: 139.6503, weight: 0.25 },  
+  { lat: 48.8566, lng: 2.3522, weight: 0.1 },    
+  { lat: 12.9716, lng: 77.5946, weight: 0.18 },   
+  { lat: -33.8688, lng: 151.2093, weight: 0.08 }, 
+  { lat: 31.2304, lng: 121.4737, weight: 0.22 },  
+  { lat: 52.5200, lng: 13.4050, weight: 0.12 },   
+  { lat: 43.6532, lng: -79.3832, weight: 0.09 },  
 ];
 
 export default function RepoDetails() {
@@ -93,7 +93,7 @@ export default function RepoDetails() {
         setLoading(false);
       } catch (err) {
         console.error("Erreur de récupération du projet:", err);
-        // Si erreur API, créer un bel objet de secours pour garantir l'affichage
+        
         const [author, name] = decodedFullName.split('/');
         setProjet(prev => prev || {
           full_name: decodedFullName,
@@ -112,7 +112,7 @@ export default function RepoDetails() {
     fetchProjectDetails();
   }, [decodedFullName]);
 
-  // 2. Récupération dynamique des localisations des créateurs d'issues via OSSInsight API
+  
   useEffect(() => {
     const fetchLocations = async () => {
       if (!decodedFullName || !decodedFullName.includes('/')) return;
@@ -182,21 +182,21 @@ export default function RepoDetails() {
     );
   }
 
-  // Extraction propre de l'auteur et du nom
+  
   const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Auteur', projet.name || 'Projet'];
   const starsCount = projet.stargazers_count !== undefined ? projet.stargazers_count : (projet.stars || 12000);
   const forksCount = projet.forks_count !== undefined ? projet.forks_count : (projet.forks || 1500);
 
   return (
     <div className="repo-details-page">
-      {/* Navigation action */}
+      {}
       <div className="nav-actions">
         <button className="btn-retour" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Retourner
         </button>
       </div>
 
-      {/* Overview Banner Header */}
+      {}
       <div className="overview-banner">
         <div className="overview-banner-left">
           {projet.avatar_url ? (
@@ -228,7 +228,7 @@ export default function RepoDetails() {
         </div>
       </div>
 
-      {/* Stats Highlights Banner */}
+      {}
       <div className="stats-banner">
         <div className="stat-item">
           <div className="stat-icon" style={{ background: 'rgba(234, 179, 8, 0.12)', color: '#eab308' }}>
@@ -271,7 +271,7 @@ export default function RepoDetails() {
         </div>
       </div>
 
-      {/* Main Visualisations Row (Graphique D3 vs Globe 3D) */}
+      {}
       <div className="dashboard-row">
         <div className="chart-container">
           <GraphiqueHistorique 
@@ -293,7 +293,7 @@ export default function RepoDetails() {
               globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
               ringsData={coordonnees}
               ringColor={() => '#3b82f6'}
-              // Taille de l'onde dynamique basée sur le pourcentage de créateurs d'issues de ce pays !
+              
               ringMaxRadius={d => Math.max(4, Math.min(18, (d.weight || 0.1) * 60))}
               ringPropagationSpeed={3}
               ringRepeatPeriod={800}

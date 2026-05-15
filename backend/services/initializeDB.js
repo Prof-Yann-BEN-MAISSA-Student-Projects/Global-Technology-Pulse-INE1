@@ -1,4 +1,4 @@
-// 1. Les imports
+
 const { fetchGithubData } = require('./githubService.js'); 
 const Project = require('../models/Project.js');
 const connectDB = require('../config/db.js');

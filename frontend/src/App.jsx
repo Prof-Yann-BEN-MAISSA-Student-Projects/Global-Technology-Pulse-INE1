@@ -19,7 +19,7 @@ export default function App() {
         <Route path="/repo/:repoId" element={<RepoDetails />} />
       </Routes>
       
-      {/* The Footer stays on every page */}
+      {}
       <Footer />
     </div>
   );

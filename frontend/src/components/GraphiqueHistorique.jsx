@@ -2,21 +2,21 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import '../css/GraphiqueHistorique.css';
 
-// Génère une série de ratios de croissance uniques basés sur les métriques du dépôt
+
 function generateGrowthCurve(total, seed) {
   const points = 8;
   const ratios = [];
-  // Utiliser le seed pour varier la forme de la courbe
-  const growthSpeed = 0.4 + (seed % 37) / 37 * 0.35; // entre 0.4 et 0.75
-  const startRatio = 0.45 + (seed % 23) / 23 * 0.30;  // départ entre 45% et 75%
+  
+  const growthSpeed = 0.4 + (seed % 37) / 37 * 0.35; 
+  const startRatio = 0.45 + (seed % 23) / 23 * 0.30;  
   
   for (let i = 0; i < points; i++) {
-    const t = i / (points - 1); // 0 → 1
-    // Courbe exponentielle avec variation par seed
+    const t = i / (points - 1); 
+    
     const ratio = startRatio + (1 - startRatio) * Math.pow(t, growthSpeed + 0.3);
     ratios.push(Math.round(total * Math.min(ratio, 1.0)));
   }
-  // Forcer le dernier point = total exact
+  
   ratios[points - 1] = total;
   return ratios;
 }
@@ -28,12 +28,12 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
     const targetStars = starsCount || 50000;
     const targetForks = forksCount || 8000;
 
-    // Générer des courbes UNIQUES pour chaque dépôt à partir de ses métriques réelles
+    
     const starsSeed = targetStars % 100 + targetForks % 50;
     const forksSeed = targetForks % 100 + targetStars % 30;
     
     const starsValues = generateGrowthCurve(targetStars, starsSeed);
-    const forksValues = generateGrowthCurve(targetForks, forksSeed + 17); // +17 pour décaler la forme
+    const forksValues = generateGrowthCurve(targetForks, forksSeed + 17); 
 
     const now = new Date();
     const dataToRender = [];
@@ -57,34 +57,34 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
     const g = svg.append("g")
       .attr("transform", `translate(${marges.gauche},${marges.haut})`);
 
-    // --- ÉCHELLE X (Temps) ---
+    
     const echelleX = d3.scaleTime()
       .domain(d3.extent(dataToRender, d => d.date))
       .range([0, largeurInterne]);
 
-    // --- ÉCHELLE Y GAUCHE (Étoiles — jaune) ---
+    
     const minStars = d3.min(dataToRender, d => d.etoiles);
     const maxStars = d3.max(dataToRender, d => d.etoiles);
     const echelleYStars = d3.scaleLinear()
       .domain([minStars * 0.95, maxStars * 1.05])
       .range([hauteurInterne, 0]);
 
-    // --- ÉCHELLE Y DROITE (Forks — bleu) ---
+    
     const minForks = d3.min(dataToRender, d => d.forks);
     const maxForks = d3.max(dataToRender, d => d.forks);
     const echelleYForks = d3.scaleLinear()
       .domain([minForks * 0.90, maxForks * 1.05])
       .range([hauteurInterne, 0]);
 
-    // --- AXES ---
-    // Axe X — mois
+    
+    
     g.append("g")
       .attr("transform", `translate(0,${hauteurInterne})`)
       .call(d3.axisBottom(echelleX).ticks(6).tickFormat(d3.timeFormat("%B")))
       .attr("color", "#64748b")
       .style("font-size", "11px");
 
-    // Axe Y Gauche — Étoiles (jaune doré)
+    
     g.append("g")
       .call(d3.axisLeft(echelleYStars).ticks(5).tickFormat(d => {
         if (d >= 1000) return (d / 1000).toFixed(0) + "k";
@@ -95,7 +95,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .style("font-size", "12px")
       .call(g => g.select(".domain").remove());
 
-    // Axe Y Droit — Forks (bleu)
+    
     g.append("g")
       .attr("transform", `translate(${largeurInterne},0)`)
       .call(d3.axisRight(echelleYForks).ticks(5).tickFormat(d => {
@@ -107,7 +107,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .style("font-size", "12px")
       .call(g => g.select(".domain").remove());
 
-    // --- COURBES ---
+    
     const ligneStars = d3.line()
       .x(d => echelleX(d.date))
       .y(d => echelleYStars(d.etoiles))
@@ -118,7 +118,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .y(d => echelleYForks(d.forks))
       .curve(d3.curveMonotoneX);
 
-    // Animation
+    
     const animerLigne = (chemin) => {
       const node = chemin.node();
       if (!node) return;
@@ -130,7 +130,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
         .attr("stroke-dashoffset", 0);
     };
 
-    // Courbe Stars (jaune)
+    
     const pathStars = g.append("path")
       .datum(dataToRender)
       .attr("fill", "none")
@@ -139,7 +139,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .attr("d", ligneStars);
     animerLigne(pathStars);
 
-    // Courbe Forks (bleu)
+    
     const pathForks = g.append("path")
       .datum(dataToRender)
       .attr("fill", "none")

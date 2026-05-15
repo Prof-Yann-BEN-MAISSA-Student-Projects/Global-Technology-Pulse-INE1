@@ -10,12 +10,12 @@ export default function HeroSection() {
   return (
     <section className="hero">
 
-      {/* Background orbs */}
+      {}
       <div className="orb orb-1"></div>
       <div className="orb orb-2"></div>
       <div className="orb orb-3"></div>
 
-      {/* Centered Badge — above both columns */}
+      {}
       <div className="hero-badge-wrapper">
         <div className="hero-badge">
           <span className="badge-dot"></span>
@@ -23,23 +23,23 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* LEFT COLUMN */}
+      {}
       <div className="hero-left">
 
-        {/* Headline */}
+        {}
         <h1 className="hero-title">
           <span className="purple-text">Visualize</span><br />
           <span className="gradient-text">Open Source</span><br />
           <span className="purple-text">Activity</span>
         </h1>
 
-        {/* Subtitle */}
+        {}
         <p className="hero-subtitle">
           Track, analyze, and compare GitHub repositories with real-time
           metrics, contributor insights, and trend detection — all in one place.
         </p>
 
-        {/* Stats */}
+        {}
         <div className="hero-stats">
           {stats.map((s) => (
             <div className="stat-card" key={s.label}>
@@ -50,7 +50,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* RIGHT COLUMN — Graph */}
+      {}
       <div className="hero-right">
         <div className="hero-graph-container">
           <svg
@@ -80,12 +80,12 @@ export default function HeroSection() {
               </linearGradient>
             </defs>
 
-            {/* Grid lines */}
+            {}
             {[80, 140, 200, 260].map(y => (
               <line key={y} x1="0" y1={y} x2="900" y2={y} stroke="#ffffff08" strokeWidth="1"/>
             ))}
 
-            {/* Secondary line + fill */}
+            {}
             <path
               className="graph-fill"
               fill="url(#fillGrad2)"
@@ -101,7 +101,7 @@ export default function HeroSection() {
               d="M 0,200 Q 100,220 200,170 T 400,200 T 600,140 T 750,160 T 900,110"
             />
 
-            {/* Primary line + fill */}
+            {}
             <path
               className="graph-fill"
               fill="url(#fillGrad)"
@@ -116,7 +116,7 @@ export default function HeroSection() {
               d="M 0,230 Q 100,190 200,240 T 400,200 T 600,130 T 750,80 T 900,120"
             />
 
-            {/* Glowing pulse dot */}
+            {}
             <circle className="data-point" cx="750" cy="80" r="6" fill="#4facfe" filter="url(#glow)"/>
           </svg>
         </div>
