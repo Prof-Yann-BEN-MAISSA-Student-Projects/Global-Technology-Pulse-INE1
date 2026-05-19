@@ -4,7 +4,7 @@ const Project = require('../models/Project.js');
 const connectDB = require('../config/db.js');
 require('dotenv').config();
 
-const tabProjects = ["facebook/react", "vuejs/vue", "angular/angular", "twbs/bootstrap", "tailwindlabs/tailwindcss", "nodejs/node", "expressjs/express", "django/django", "spring-projects/spring-boot", "laravel/laravel", "tensorflow/tensorflow", "facebook/react-native", "torvalds/linux", "microsoft/vscode", "microsoft/TypeScript", "kubernetes/kubernetes"];
+const tabProjects = ["facebook/react", "vuejs/vue", "angular/angular", "twbs/bootstrap", "tailwindlabs/tailwindcss", "nodejs/node", "expressjs/express", "django/django", "spring-projects/spring-boot", "laravel/laravel", "tensorflow/tensorflow", "facebook/react-native", "torvalds/linux", "microsoft/vscode", "kubernetes/kubernetes"];
 
 async function initialiserBaseDeDonnees() {
     try {
@@ -18,7 +18,11 @@ async function initialiserBaseDeDonnees() {
             const data = await fetchGithubData(nomDuProjet);
             
             if (data) {
-                await Project.create(data);
+                await Project.updateOne(
+                    { full_name: nomDuProjet },
+                    { $set: data },
+                    { upsert: true }
+                );
                 console.log(`✅ ${nomDuProjet} sauvegardé avec succès !`);
             }
         }

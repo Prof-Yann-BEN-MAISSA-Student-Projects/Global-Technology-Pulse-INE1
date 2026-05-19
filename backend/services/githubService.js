@@ -12,13 +12,15 @@ async function fetchGithubData(name) {
         });
         
         const data = resp.data;
-
         const objetProjet = {
             full_name: data.full_name,
             description: data.description,
             language: data.language,
             stargazers_count: data.stargazers_count,
             forks_count: data.forks_count,
+            watchers_count: data.watchers_count,
+            open_issues_count: data.open_issues_count,
+            size: data.size,
             avatar_url: data.owner.avatar_url
         };
 

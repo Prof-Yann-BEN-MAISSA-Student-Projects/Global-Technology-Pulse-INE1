@@ -1,15 +1,22 @@
 import { FaGithub } from 'react-icons/fa';
 import { FiSun, FiMoon, FiSearch } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 function NavBar({ isDarkMode, toggleTheme }) {
     return (
         <nav className="navbar">
             <div className="logo">
-                <h2>Tech Pulse INPT</h2>
+                <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <h2>Tech Pulse INPT</h2>
+                </Link>
             </div>
 
             <ul className="nav-links">
-                <li>Compare</li>
+                <li>
+                    <Link to="/compare" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        Compare
+                    </Link>
+                </li>
                 <li>Trending</li>
                 <li>About Us</li>
             </ul>

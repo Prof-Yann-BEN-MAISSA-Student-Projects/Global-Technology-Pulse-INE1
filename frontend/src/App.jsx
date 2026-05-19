@@ -4,6 +4,7 @@ import Navbar from './components/NavBar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import RepoDetails from './pages/RepoDetails';
+import ComparePage from './pages/ComparePage';
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -16,6 +17,7 @@ export default function App() {
       
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/compare" element={<ComparePage />} />
         <Route path="/repo/:repoId" element={<RepoDetails />} />
       </Routes>
       

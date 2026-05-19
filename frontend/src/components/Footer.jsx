@@ -1,4 +1,5 @@
 import { FaTwitter, FaGithub, FaLinkedin, FaDiscord } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
@@ -6,7 +7,9 @@ export default function Footer() {
       <div className="footer-content">
         <div className="footer-brand">
           <div className="logo">
-            <h2>Tech Pulse INPT</h2>
+            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+              <h2>Tech Pulse INPT</h2>
+            </Link>
           </div>
           <p>
             Visualizing open-source activity and comparing GitHub repository 
@@ -25,7 +28,11 @@ export default function Footer() {
             <h4>Product</h4>
             <ul>
               <li>Features</li>
-              <li>Compare Repos</li>
+              <li>
+                <Link to="/compare" style={{ color: 'inherit', textDecoration: 'none' }}>
+                  Compare Repos
+                </Link>
+              </li>
               <li>Trending</li>
               <li>API Access</li>
             </ul>

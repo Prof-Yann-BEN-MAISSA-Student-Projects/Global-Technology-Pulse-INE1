@@ -4,7 +4,7 @@ const { fetchGithubData } = require('./githubService');
 
 const mettreAJourLesProjets = async () => {
     console.log("⚙️ [WORKER] Lancement de la mise à jour automatique...");
-    
+
     try {
         const projetsEnBase = await Project.find();
 
@@ -16,17 +16,19 @@ const mettreAJourLesProjets = async () => {
 
             if (nouvellesDonnees) {
                 await Project.updateOne(
-                    { full_name: nomDuProjet }, 
+                    { full_name: nomDuProjet },
                     {
                         $set: {
-                            current_stars: nouvellesDonnees.stargazers_count,
-                            current_forks: nouvellesDonnees.forks_count
+                            stargazers_count: nouvellesDonnees.stargazers_count,
+                            forks_count: nouvellesDonnees.forks_count,
+                            watchers_count: nouvellesDonnees.watchers_count,
+                            open_issues_count: nouvellesDonnees.open_issues_count,
+                            size: nouvellesDonnees.size,
                         },
                         $push: {
                             history: {
-                                date: new Date(), 
+                                date: new Date(),
                                 stars: nouvellesDonnees.stargazers_count,
-                                forks: nouvellesDonnees.forks_count
                             }
                         }
                     }
@@ -35,7 +37,7 @@ const mettreAJourLesProjets = async () => {
             }
         }
         console.log("🏁 [WORKER] Tous les projets sont à jour. Je retourne dormir.");
-        
+
     } catch (erreur) {
         console.error("❌ [WORKER] Erreur critique :", erreur);
     }
@@ -44,7 +46,7 @@ const mettreAJourLesProjets = async () => {
 
 const demarrerWorker = () => {
     cron.schedule('0 0 * * *', mettreAJourLesProjets);
-    
+
     console.log("⏰ Automatisme activé : Le serveur interrogera GitHub chaque jour à minuit.");
 };
 
