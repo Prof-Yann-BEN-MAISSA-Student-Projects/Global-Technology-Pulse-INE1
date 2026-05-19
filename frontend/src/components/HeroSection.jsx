@@ -60,29 +60,29 @@ export default function HeroSection() {
           >
             <defs>
               <filter id="glow">
-                <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="5" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
               <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#4facfe"/>
-                <stop offset="100%" stopColor="#a855f7"/>
+                <stop offset="0%" stopColor="#4facfe" />
+                <stop offset="100%" stopColor="#a855f7" />
               </linearGradient>
               <linearGradient id="fillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#4facfe" stopOpacity="0.35"/>
-                <stop offset="100%" stopColor="#4facfe" stopOpacity="0"/>
+                <stop offset="0%" stopColor="#4facfe" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#4facfe" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="fillGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#a855f7" stopOpacity="0.2"/>
-                <stop offset="100%" stopColor="#a855f7" stopOpacity="0"/>
+                <stop offset="0%" stopColor="#a855f7" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
               </linearGradient>
             </defs>
 
             {/* Grid lines */}
             {[80, 140, 200, 260].map(y => (
-              <line key={y} x1="0" y1={y} x2="900" y2={y} stroke="#ffffff08" strokeWidth="1"/>
+              <line key={y} x1="0" y1={y} x2="900" y2={y} stroke="#ffffff08" strokeWidth="1" />
             ))}
 
             {/* Secondary line + fill */}
@@ -117,7 +117,7 @@ export default function HeroSection() {
             />
 
             {/* Glowing pulse dot */}
-            <circle className="data-point" cx="750" cy="80" r="6" fill="#4facfe" filter="url(#glow)"/>
+            <circle className="data-point" cx="750" cy="80" r="6" fill="#4facfe" filter="url(#glow)" />
           </svg>
         </div>
       </div>

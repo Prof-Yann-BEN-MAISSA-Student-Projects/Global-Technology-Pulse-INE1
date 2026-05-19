@@ -104,6 +104,8 @@ async function searchApi(req, res){
             language: projet.language,
             stargazers_count: projet.stargazers_count,
             forks_count: projet.forks_count,
+            watchers_count: projet.watchers_count,
+            open_issues_count: projet.open_issues_count,
             avatar_url: projet.owner?.avatar_url
         }));
         
