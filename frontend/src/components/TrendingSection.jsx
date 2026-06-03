@@ -16,8 +16,8 @@ export default function TrendingSection() {
     // We define an async function to fetch our data
     const fetchProjects = async () => {
       try {
-        // Fetch from your backend URL
-        const response = await fetch('http://localhost:2500/api/projects');
+        // Fetch from your backend URL for trending projects
+        const response = await fetch('http://localhost:2500/api/projects/trending');
         
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -26,17 +26,11 @@ export default function TrendingSection() {
         // Convert the response to JSON format
         const data = await response.json();
         
-        // Find the top 5 by adding their stars and forks together
-        const top5Projects = data
-          .sort((a, b) => {
-            const scoreA = (a.stargazers_count || 0) + (a.forks_count || 0);
-            const scoreB = (b.stargazers_count || 0) + (b.forks_count || 0);
-            return scoreB - scoreA; // Sort highest to lowest
-          })
-          .slice(0, 5); // Keep only the first 5
+        // Slice the first 6 repositories
+        const top6Projects = data.slice(0, 6);
         
-        // Format the top 5 projects to match our RepoCard perfectly
-        const formattedData = top5Projects.map(project => {
+        // Format the projects to match our RepoCard perfectly
+        const formattedData = top6Projects.map(project => {
           // 'full_name' looks like "author/repoName", so we split it by '/'
           const [authorName, repoName] = project.full_name ? project.full_name.split('/') : ['Unknown', 'Unknown'];
           
@@ -53,7 +47,7 @@ export default function TrendingSection() {
             forks: project.forks_count > 1000 
               ? (project.forks_count / 1000).toFixed(1) + 'k' 
               : project.forks_count,
-            trend: 'Live' // We can put a placeholder here since backend doesn't have trend right now
+            trend: 'Live'
           };
         });
 

@@ -29,7 +29,8 @@
   flex-direction: column;
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: all 0.3s ease; /* Makes the color switch smooth */
+  transition: all 0.3s ease;
+  /* Makes the color switch smooth */
 }
 
 .navbar {
@@ -75,6 +76,7 @@
   cursor: pointer;
   color: var(--text-color);
 }
+
 /* Container for the right-side actions */
 .action-icons {
   display: flex;
@@ -102,19 +104,21 @@
 .icon {
   font-size: 1.25rem;
 }
+
 /* --- Footer Styles --- */
 .footer {
   border-top: 1px solid var(--border-color);
   padding: 4rem 4rem 2rem 4rem;
   /* This pushes the footer to the bottom even if the page content is short */
-  margin-top: auto; 
+  margin-top: auto;
 }
 
 .footer-content {
   display: flex;
   justify-content: space-between;
   margin-bottom: 3rem;
-  flex-wrap: wrap; /* Allows it to stack nicely on smaller screens */
+  flex-wrap: wrap;
+  /* Allows it to stack nicely on smaller screens */
   gap: 2rem;
 }
 
@@ -197,6 +201,7 @@
 .legal-links span:hover {
   color: var(--text-color);
 }
+
 /* --- Hero Section Styles --- */
 .hero {
   display: flex;
@@ -235,7 +240,7 @@
   width: 100%;
   height: 100%;
   /* Makes the whole graph slowly float up and down */
-  animation: float 6s ease-in-out infinite; 
+  animation: float 6s ease-in-out infinite;
 }
 
 /* The magic trick that draws the line */
@@ -248,7 +253,8 @@
 .graph-fill {
   opacity: 0;
   animation: fadeIn 2s ease-in forwards;
-  animation-delay: 1.5s; /* Wait for the line to draw halfway before showing gradient */
+  animation-delay: 1.5s;
+  /* Wait for the line to draw halfway before showing gradient */
 }
 
 /* Keyframes define the steps of our animations */
@@ -265,20 +271,31 @@
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
+
 /* --- Search Bar Styles --- */
 .search-container {
-  position: relative; /* This allows us to absolute-position the icon inside it */
+  position: relative;
+  /* This allows us to absolute-position the icon inside it */
   display: flex;
   align-items: center;
 }
 
 .search-icon {
   position: absolute;
-  left: 0.75rem; /* Push it slightly from the left edge */
+  left: 0.75rem;
+  /* Push it slightly from the left edge */
   color: var(--text-muted);
   font-size: 1.1rem;
 }
@@ -288,12 +305,14 @@
   border: 1px solid var(--border-color);
   color: var(--text-color);
   /* Top/Bottom padding 0.5rem, Right 1rem, Left 2.5rem to make room for the icon! */
-  padding: 0.5rem 1rem 0.5rem 2.5rem; 
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
   border-radius: 6px;
   outline: none;
-  width: 280px; /* Gives the search bar a nice consistent width */
+  width: 280px;
+  /* Gives the search bar a nice consistent width */
   transition: border-color 0.2s ease;
 }
+
 /* --- Trending Section Styles --- */
 .trending-section {
   padding: 4rem;
@@ -337,7 +356,8 @@
 
 .repo-card:hover {
   transform: translateY(-5px);
-  border-color: #3b82f6; /* Subtle blue glow on hover */
+  border-color: #3b82f6;
+  /* Subtle blue glow on hover */
 }
 
 .card-header {
@@ -363,7 +383,8 @@
 }
 
 .trend-badge {
-  color: #10b981; /* Green color for positive trend */
+  color: #10b981;
+  /* Green color for positive trend */
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -373,7 +394,8 @@
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 1.5rem;
-  min-height: 40px; /* Keeps cards a consistent height */
+  min-height: 40px;
+  /* Keeps cards a consistent height */
 }
 
 .card-footer {
@@ -410,13 +432,24 @@
 }
 
 /* specific colors for specific languages */
-.python { background-color: #3572A5; }
-.typescript { background-color: #3178c6; }
-.go { background-color: #00ADD8; }
+.python {
+  background-color: #3572A5;
+}
+
+.typescript {
+  background-color: #3178c6;
+}
+
+.go {
+  background-color: #00ADD8;
+}
 
 .search-container input:focus {
-  border-color: #3b82f6; /* Adds a nice blue highlight when you click to type */
-}/* --- Modern Collections Section --- */
+  border-color: #3b82f6;
+  /* Adds a nice blue highlight when you click to type */
+}
+
+/* --- Modern Collections Section --- */
 .collections-section {
   padding: 6rem 4rem;
   display: flex;
@@ -439,7 +472,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: rgba(139, 92, 246, 0.1); /* Subtle purple */
+  background-color: rgba(139, 92, 246, 0.1);
+  /* Subtle purple */
   border: 1px solid rgba(139, 92, 246, 0.2);
   border-radius: 50px;
   margin-bottom: 1rem;
@@ -458,6 +492,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -465,7 +500,8 @@
 }
 
 .fade-in-up {
-  opacity: 0; /* Start hidden */
+  opacity: 0;
+  /* Start hidden */
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
@@ -473,7 +509,8 @@
 .modern-card {
   position: relative;
   border-radius: 1rem;
-  opacity: 0; /* Start hidden for animation */
+  opacity: 0;
+  /* Start hidden for animation */
   animation: fadeInUp 0.5s ease-out forwards;
   cursor: pointer;
 }
@@ -513,12 +550,29 @@
 
 /* --- Gradient Themes --- */
 /* We define specific gradients for the icons and glows */
-.theme-purple { background: linear-gradient(135deg, #a855f7, #ec4899, #f43f5e); }
-.theme-blue { background: linear-gradient(135deg, #3b82f6, #06b6d4, #14b8a6); }
-.theme-green { background: linear-gradient(135deg, #22c55e, #10b981, #14b8a6); }
-.theme-orange { background: linear-gradient(135deg, #f97316, #f59e0b, #eab308); }
-.theme-indigo { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); }
-.theme-red { background: linear-gradient(135deg, #ef4444, #f43f5e, #ec4899); }
+.theme-purple {
+  background: linear-gradient(135deg, #a855f7, #ec4899, #f43f5e);
+}
+
+.theme-blue {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4, #14b8a6);
+}
+
+.theme-green {
+  background: linear-gradient(135deg, #22c55e, #10b981, #14b8a6);
+}
+
+.theme-orange {
+  background: linear-gradient(135deg, #f97316, #f59e0b, #eab308);
+}
+
+.theme-indigo {
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+}
+
+.theme-red {
+  background: linear-gradient(135deg, #ef4444, #f43f5e, #ec4899);
+}
 
 .modern-icon-box {
   display: inline-flex;
@@ -554,7 +608,8 @@
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: 1rem;
-  height: 42px; /* Keeps consistent height */
+  height: 42px;
+  /* Keeps consistent height */
 }
 
 .card-stats {
@@ -573,7 +628,8 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: #22c55e; /* Green */
+  color: #22c55e;
+  /* Green */
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -600,4 +656,52 @@
 
 .modern-card:hover .card-action .arrow {
   transform: translateX(5px);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* --- Pagination Styles --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.pagination button {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.pagination button.active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

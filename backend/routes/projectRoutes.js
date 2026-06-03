@@ -5,6 +5,8 @@ const projectController = require('../controllers/ProjectController');
 
 router.get('/', projectController.getProjects);
 router.get('/recherche/:motCle', projectController.searchApi);
+router.get('/trending', projectController.getTrendingProjects);
+router.get('/trending-paginated', projectController.getTrendingPaginated);
 router.get('/:nomDuProjet/locations', projectController.getProfiles)
 router.get('/:nomDuProjet', projectController.getOneProject);
 
