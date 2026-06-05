@@ -1,4 +1,5 @@
 import { FiCpu, FiCode, FiDatabase, FiCloud, FiSmartphone, FiShield, FiStar, FiArrowRight, FiTrendingUp } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const collections = [
   {
@@ -52,6 +53,8 @@ const collections = [
 ];
 
 export default function CollectionsSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="collections-section">
       
@@ -71,8 +74,8 @@ export default function CollectionsSection() {
           <div 
             key={collection.name} 
             className="modern-card group"
-            // This inline style calculates a slight delay for each card so they pop in one after another
-            style={{ animationDelay: `${index * 0.1}s` }} 
+            onClick={() => navigate(`/collection/${encodeURIComponent(collection.name)}`)}
+            style={{ animationDelay: `${index * 0.1}s`, cursor: 'pointer' }} 
           >
             {/* The colored background glow that appears on hover */}
             <div className={`card-glow ${collection.theme}`}></div>

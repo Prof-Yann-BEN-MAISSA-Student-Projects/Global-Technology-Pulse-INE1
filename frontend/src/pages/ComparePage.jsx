@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Search, Star, GitFork, Code, ArrowLeftRight, Eye, AlertCircle } from 'lucide-react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import '../assets/styles/comparepage.css';
+import '../css/RadarSante.css';
+
+function normaliser(valeur, max) {
+  if (!valeur || valeur <= 0) return 0;
+  return Math.min(100, Math.round((Math.log(valeur + 1) / Math.log(max + 1)) * 100));
+}
 
 // Helper to derive extra metrics deterministically
 function getRepoExtendedStats(repo) {
@@ -102,32 +109,12 @@ export default function ComparePage() {
     const leftStats = getRepoExtendedStats(repoLeft);
     const rightStats = getRepoExtendedStats(repoRight);
 
-    // Radar Chart trigonometry helper
-    const getCoordinatesForPercent = (index, percent) => {
-        const angleStep = (2 * Math.PI) / 5;
-        const angle = index * angleStep - Math.PI / 2;
-        const radius = (percent / 100) * 100; // max radius is 100
-        const x = 150 + radius * Math.cos(angle);
-        const y = 150 + radius * Math.sin(angle);
-        return { x, y };
-    };
-
-    // Normalized scores for Radar Chart (Stars, Forks, Contributors, Commits, Activity)
-    const radarLabels = ['Stars', 'Forks', 'Contributors', 'Commits', 'Activity'];
-    const leftScores = leftStats ? [
-        Math.min(100, (leftStats.stars / 250000) * 100),
-        Math.min(100, (leftStats.forks / 60000) * 100),
-        Math.min(100, (leftStats.contributors / 5000) * 100),
-        Math.min(100, (leftStats.commits / 1200000) * 100),
-        Math.min(100, leftStats.activity)
-    ] : [];
-
-    const rightScores = rightStats ? [
-        Math.min(100, (rightStats.stars / 250000) * 100),
-        Math.min(100, (rightStats.forks / 60000) * 100),
-        Math.min(100, (rightStats.contributors / 5000) * 100),
-        Math.min(100, (rightStats.commits / 1200000) * 100),
-        Math.min(100, rightStats.activity)
+    const radarData = repoLeft && repoRight ? [
+        { axis: 'Stars', repo1: normaliser(repoLeft.stargazers_count, 300000), repo2: normaliser(repoRight.stargazers_count, 300000) },
+        { axis: 'Forks', repo1: normaliser(repoLeft.forks_count, 80000), repo2: normaliser(repoRight.forks_count, 80000) },
+        { axis: 'Watchers', repo1: normaliser(repoLeft.watchers_count, 50000), repo2: normaliser(repoRight.watchers_count, 50000) },
+        { axis: 'Issues', repo1: normaliser(repoLeft.open_issues_count, 10000), repo2: normaliser(repoRight.open_issues_count, 10000) },
+        { axis: 'Repo Size', repo1: normaliser(repoLeft.size, 4000000), repo2: normaliser(repoRight.size, 4000000) },
     ] : [];
 
     // Max value calculation for Bar Chart Y-Scale
@@ -358,68 +345,33 @@ export default function ComparePage() {
                         {/* Radar Chart */}
                         <div className="compare-chart-box">
                             <h3 className="chart-box-title">Overall Performance</h3>
-                            <div className="chart-wrapper">
-                                <svg viewBox="0 0 300 300" className="chart-svg">
-                                    {/* Nested pentagon grid lines */}
-                                    {[25, 50, 75, 100].map(level => {
-                                        const pts = [0, 1, 2, 3, 4].map(idx => getCoordinatesForPercent(idx, level));
-                                        const dPath = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p.x + ',' + p.y).join(' ') + ' Z';
-                                        return (
-                                            <path key={level} d={dPath} stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" />
-                                        );
-                                    })}
-
-                                    {/* Ticks values (25, 50, 75, 100) */}
-                                    {[25, 50, 75, 100].map(level => {
-                                        const p = getCoordinatesForPercent(1.3, level);
-                                        return (
-                                            <text key={level} x={p.x} y={p.y + 3} fill="#64748b" fontSize="8" textAnchor="middle">{level}</text>
-                                        );
-                                    })}
-
-                                    {/* Radial spoke lines */}
-                                    {[0, 1, 2, 3, 4].map(idx => {
-                                        const outer = getCoordinatesForPercent(idx, 100);
-                                        return (
-                                            <line key={idx} x1="150" y1="150" x2={outer.x} y2={outer.y} stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-                                        );
-                                    })}
-
-                                    {/* Spoke Labels */}
-                                    {radarLabels.map((lbl, idx) => {
-                                        const p = getCoordinatesForPercent(idx, 115);
-                                        let anchor = 'middle';
-                                        if (p.x > 152) anchor = 'start';
-                                        else if (p.x < 148) anchor = 'end';
-                                        return (
-                                            <text key={lbl} x={p.x} y={p.y + 4} fill="var(--text-muted)" fontSize="10" textAnchor={anchor} fontWeight="500">{lbl}</text>
-                                        );
-                                    })}
-
-                                    {/* Left radar path */}
-                                    {leftScores.length > 0 && (() => {
-                                        const pts = leftScores.map((score, idx) => getCoordinatesForPercent(idx, score));
-                                        const dPath = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p.x + ',' + p.y).join(' ') + ' Z';
-                                        return (
-                                            <g>
-                                                <path d={dPath} fill="rgba(59, 130, 246, 0.25)" stroke="#3b82f6" strokeWidth="2" />
-                                                {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3" fill="#3b82f6" stroke="var(--input-bg)" strokeWidth="1" />)}
-                                            </g>
-                                        );
-                                    })()}
-
-                                    {/* Right radar path */}
-                                    {rightScores.length > 0 && (() => {
-                                        const pts = rightScores.map((score, idx) => getCoordinatesForPercent(idx, score));
-                                        const dPath = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p.x + ',' + p.y).join(' ') + ' Z';
-                                        return (
-                                            <g>
-                                                <path d={dPath} fill="rgba(168, 85, 247, 0.25)" stroke="#a855f7" strokeWidth="2" />
-                                                {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3" fill="#a855f7" stroke="var(--input-bg)" strokeWidth="1" />)}
-                                            </g>
-                                        );
-                                    })()}
+                            <div className="chart-wrapper radar-glow-wrapper" style={{ padding: '20px' }}>
+                                <svg width="0" height="0">
+                                    <defs>
+                                        <filter id="neon-glow-compare">
+                                            <feGaussianBlur stdDeviation="3" result="blur" />
+                                            <feMerge>
+                                                <feMergeNode in="blur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
                                 </svg>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                                        <PolarGrid stroke="rgba(129, 140, 248, 0.18)" />
+                                        <PolarAngleAxis dataKey="axis" tick={{ fill: 'var(--text-color)', fontSize: 12, fontWeight: 500 }} />
+                                        <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} />
+                                        
+                                        <Tooltip 
+                                            contentStyle={{ backgroundColor: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: '12px' }}
+                                            itemStyle={{ fontWeight: 'bold' }}
+                                        />
+
+                                        <Radar name={repoLeft?.name || 'Repo 1'} dataKey="repo1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={2.5} dot={{ r: 4, fill: '#3b82f6', strokeWidth: 0 }} style={{ filter: 'url(#neon-glow-compare)' }} />
+                                        <Radar name={repoRight?.name || 'Repo 2'} dataKey="repo2" stroke="#a855f7" fill="#a855f7" fillOpacity={0.15} strokeWidth={2.5} dot={{ r: 4, fill: '#a855f7', strokeWidth: 0 }} style={{ filter: 'url(#neon-glow-compare)' }} />
+                                    </RadarChart>
+                                </ResponsiveContainer>
                             </div>
 
                             {/* Legend */}

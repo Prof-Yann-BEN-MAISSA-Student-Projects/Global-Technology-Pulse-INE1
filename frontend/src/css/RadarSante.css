@@ -1,0 +1,69 @@
+/* ── RadarSanteProjet ── */
+
+.radar-card {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    width: 100%;
+    color: var(--text-color);
+}
+
+.radar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Glassmorphism override for dark mode only */
+.dark .radar-card {
+    background: rgba(19, 19, 40, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-color: rgba(129, 140, 248, 0.15);
+}
+
+.dark .radar-card:hover {
+    box-shadow:
+        0 8px 32px rgba(6, 182, 212, 0.1),
+        0 0 1px rgba(129, 140, 248, 0.4);
+}
+
+.radar-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 0.25rem;
+    text-align: center;
+}
+
+.radar-glow-wrapper {
+    position: relative;
+}
+
+/* Neon pulse — dark mode only */
+.dark .radar-glow-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+@media (max-width: 768px) {
+    .radar-card {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .radar-card {
+        padding: 0.75rem;
+    }
+
+    .radar-title {
+        font-size: 0.95rem;
+    }
+}

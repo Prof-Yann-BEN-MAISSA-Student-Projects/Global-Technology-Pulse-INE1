@@ -444,6 +444,42 @@
   background-color: #00ADD8;
 }
 
+.javascript {
+  background-color: #f1e05a;
+}
+
+.csharp {
+  background-color: #178600;
+}
+
+.ruby {
+  background-color: #701516;
+}
+
+.cpp {
+  background-color: #f34b7d;
+}
+
+.java {
+  background-color: #b07219;
+}
+
+.php {
+  background-color: #4F5D95;
+}
+
+.rust {
+  background-color: #dea584;
+}
+
+.html {
+  background-color: #e34c26;
+}
+
+.css {
+  background-color: #563d7c;
+}
+
 .search-container input:focus {
   border-color: #3b82f6;
   /* Adds a nice blue highlight when you click to type */

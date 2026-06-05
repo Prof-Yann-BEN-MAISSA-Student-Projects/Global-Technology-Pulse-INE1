@@ -17,26 +17,14 @@ function NavBar({ isDarkMode, toggleTheme }) {
 
             setLoading(true);
             try {
-                // If it contains a slash, assume it's "owner/repo" and go directly
+                // If it contains a slash, assume it's a specific "owner/repo" and go directly
                 if (term.includes('/')) {
                     navigate(`/repo/${encodeURIComponent(term)}`);
-                    setSearchTerm('');
                 } else {
-                    // Otherwise search using backend API
-                    const apiUrl = import.meta.env.DEV ? 'http://localhost:2500' : '/_/backend';
-                    const resp = await axios.get(`${apiUrl}/api/projects/recherche/${encodeURIComponent(term)}`);
-                    
-                    if (resp.data && resp.data.length > 0) {
-                        const firstResult = resp.data[0];
-                        navigate(`/repo/${encodeURIComponent(firstResult.full_name)}`);
-                        setSearchTerm('');
-                    } else {
-                        console.log('No repository found for:', term);
-                        // Fallback: try to navigate directly with the term if not found
-                        navigate(`/repo/${encodeURIComponent(term)}`);
-                        setSearchTerm('');
-                    }
+                    // Navigate to the new search results page
+                    navigate(`/search/${encodeURIComponent(term)}`);
                 }
+                setSearchTerm('');
             } catch (err) {
                 console.error('Search error:', err);
             } finally {

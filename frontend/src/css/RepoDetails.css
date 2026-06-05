@@ -136,6 +136,21 @@
     width: 100%;
 }
 
+.dashboard {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.radar-container,
+.histogram-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
 @media (max-width: 1024px) {
     .dashboard-row {
         flex-direction: column;
@@ -231,17 +246,17 @@
     .repo-details-page {
         padding: 2rem 1.5rem;
     }
-    
+
     .overview-banner {
         padding: 1.5rem;
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .overview-banner-right {
         align-items: stretch;
     }
-    
+
     .github-external-btn {
         justify-content: center;
     }

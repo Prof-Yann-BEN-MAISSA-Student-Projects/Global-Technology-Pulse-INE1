@@ -5,6 +5,8 @@ import Globe from 'react-globe.gl';
 import GraphiqueHistorique from '../components/GraphiqueHistorique';
 import { FiStar, FiGitBranch, FiExternalLink, FiArrowLeft, FiActivity, FiCode } from 'react-icons/fi';
 import { FaGithub } from 'react-icons/fa';
+import RadarSanteProjet from '../components/RadarSanteProjet.jsx';
+import RepoHistogram from '../components/RepoHistogram.jsx';
 import '../css/RepoDetails.css';
 
 // Dictionnaire associant les codes ISO 2 des pays à leurs coordonnées centrales (200+ pays)
@@ -148,6 +150,7 @@ const countryCoordinates = {
   ZW: { lat: -19.0154, lng: 29.1549 },
 };
 
+
 // Coordonnées mondiales par défaut pour animer le globe de façon spectaculaire
 const defaultHubLocations = [
   { lat: 37.7749, lng: -122.4194, weight: 0.2 }, // San Francisco
@@ -237,7 +240,7 @@ export default function RepoDetails() {
         if (response.data?.data?.rows && response.data.data.rows.length > 0) {
           const rows = response.data.data.rows;
           const coordonneesFormatees = [];
-          
+
           rows.forEach(row => {
             const code = row.country_code;
             if (code && countryCoordinates[code]) {
@@ -380,33 +383,43 @@ export default function RepoDetails() {
       </div>
 
       {/* Main Visualisations Row (Graphique D3 vs Globe 3D) */}
-      <div className="dashboard-row">
-        <div className="chart-container">
-          <GraphiqueHistorique 
-            donnees={projet.history && projet.history.length > 1 ? projet.history : undefined} 
-            starsCount={starsCount}
-            forksCount={forksCount}
-          />
-        </div>
-
-        <div className="globe-container">
-          <h3>Localisation des Contributeurs</h3>
-          {globeLoading ? (
-            <p style={{ color: '#3b82f6', marginTop: '2rem' }}>Analyse satellitaire en cours...</p>
-          ) : (
-            <Globe
-              width={380}
-              height={380}
-              backgroundColor="rgba(0,0,0,0)"
-              globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
-              ringsData={coordonnees}
-              ringColor={() => '#3b82f6'}
-              // Taille de l'onde dynamique basée sur le pourcentage de créateurs d'issues de ce pays !
-              ringMaxRadius={d => Math.max(4, Math.min(18, (d.weight || 0.1) * 60))}
-              ringPropagationSpeed={3}
-              ringRepeatPeriod={800}
+      <div className='dashboard'>
+        <div className="dashboard-row">
+          <div className="chart-container">
+            <GraphiqueHistorique
+              donnees={projet.history && projet.history.length > 1 ? projet.history : undefined}
+              starsCount={starsCount}
+              forksCount={forksCount}
             />
-          )}
+          </div>
+
+          <div className="globe-container">
+            <h3>Localisation des Contributeurs</h3>
+            {globeLoading ? (
+              <p style={{ color: '#3b82f6', marginTop: '2rem' }}>Analyse satellitaire en cours...</p>
+            ) : (
+              <Globe
+                width={380}
+                height={380}
+                backgroundColor="rgba(0,0,0,0)"
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
+                ringsData={coordonnees}
+                ringColor={() => '#3b82f6'}
+                // Taille de l'onde dynamique basée sur le pourcentage de créateurs d'issues de ce pays !
+                ringMaxRadius={d => Math.max(4, Math.min(18, (d.weight || 0.1) * 60))}
+                ringPropagationSpeed={3}
+                ringRepeatPeriod={800}
+              />
+            )}
+          </div>
+        </div>
+        <div className='dashboard-row bottom-graphics'>
+          <div className='radar-container'>
+            <RadarSanteProjet projet={projet} />
+          </div>
+          <div className='histogram-container'>
+            <RepoHistogram projet={projet} />
+          </div>
         </div>
       </div>
     </div>
