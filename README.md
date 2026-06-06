@@ -50,6 +50,7 @@ To get a local copy up and running, follow these simple steps.
    cd client && npm install
 
 4. Create a .env file in the root directory and enter your API keys and Database URI:
+   ```bash
    PORT=5000
    MONGO_URI=your_mongodb_connection_string
    GITHUB_API_TOKEN=your_github_personal_access_token
