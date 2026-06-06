@@ -38,11 +38,11 @@ To get a local copy up and running, follow these simple steps.
 
 1. Clone the repository
    ```bash
-   git clone [https://github.com/your-username/techpulse-inpt.git](https://github.com/your-username/techpulse-inpt.git)
+   git clone https://github.com/AlaeeddineAmrani/techpulse-inpt.git
 
 2. Navigate into the project directory
    ```bash
-   cd techpulse-inpt
+   cd tech-pulse-inpt
 
 3. Install NPM packages for both client and server
    ```bash
