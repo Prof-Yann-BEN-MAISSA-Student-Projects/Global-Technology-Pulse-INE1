@@ -2,7 +2,7 @@
 
 > **Visualize Open Source Activity.** Track, analyze, and compare GitHub repositories with real-time metrics, contributor insights, and trend detection — all in one place.
 
-![TechPulse INPT Banner](https://via.placeholder.com/1200x400?text=TechPulse+INPT+-+GitHub+Analytics+Platform) ## 📖 About The Project
+## 📖 About The Project
 
 TechPulse INPT is a live GitHub analytics platform designed for developers, researchers, and open-source enthusiasts. It provides deep insights into the health, momentum, and global reach of open-source projects. By aggregating data from millions of commits and thousands of repositories, TechPulse allows users to discover trending tech stacks, compare repository performance head-to-head, and visualize contributor locations on an interactive 3D globe.
 
