@@ -321,36 +321,6 @@ export default function RepoDetails() {
     );
   }
 
-  const addToDatabase = async (projet) => {
-        try {            
-          if (projet._id) {
-            alert("Ce projet est déjà dans la base de données.");
-            return;
-          }
-          await axios.post('http://localhost:2500/api/projects', {
-                avatar_url: projet.avatar_url || (projet.owner && projet.owner.avatar_url),
-                full_name: projet.full_name,
-                description: projet.description,
-                language: projet.language,
-                stargazers_count: projet.stargazers_count,
-                forks_count: projet.forks_count,
-                watchers_count: projet.watchers_count,
-                open_issues_count: projet.open_issues_count,
-                size: projet.size,
-                contributors_url: projet.contributors_url || `https://api.github.com/repos/${projet.full_name}/contributors`
-            });
-          alert("Projet ajouté à la base de données !");
-
-        } catch (error) {
-            console.error("Erreur lors de l'ajout du projet à la base de données :", error);
-            if (error.response && error.response.status === 400 && error.response.data.details && error.response.data.details.includes('duplicate')) {
-                alert("Ce projet est déjà dans la base de données.");
-            } else {
-                alert("Erreur lors de l'ajout du projet à la base de données.");
-            }
-        }
-  };
-
   // Extraction propre de l'auteur et du nom
   const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Auteur', projet.name || 'Projet'];
   const starsCount = projet.stargazers_count !== undefined ? projet.stargazers_count : (projet.stars || 12000);
@@ -361,10 +331,7 @@ export default function RepoDetails() {
       {/* Navigation action */}
       <div className="nav-actions">
         <button className="btn-retour" onClick={() => navigate(-1)}>
-          <FiArrowLeft /> Retourner
-        </button>
-        <button className="btn-ajouter" onClick={() => addToDatabase(projet)}>
-          <FiStar /> Add to Database 
+          <FiArrowLeft /> Back
         </button>
       </div>
 
@@ -483,13 +450,13 @@ export default function RepoDetails() {
           <div className='histogram-container'>
             <RepoHistogram projet={projet} />
           </div>
-          <div className='radial-container'>
-            <ChartRadialLabel projet={projet} />
-          </div>
         </div>
         <div className='dashboard-row bottom-graphics'>
           <div className='demographics-container-wrapper'>
             <DemographicsContainer nomProjet={projet.full_name} onDataLoaded={handleDemographicsLoaded} />
+          </div>
+          <div className='radial-container'>
+            <ChartRadialLabel projet={projet} />
           </div>
         </div>
       </div>

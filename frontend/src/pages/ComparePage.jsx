@@ -314,13 +314,13 @@ export default function ComparePage() {
                                     <div className="chart-tooltip">
                                         <div className="tooltip-title">{barMetrics[hoveredBarIndex]}</div>
                                         <div className="tooltip-item blue-dot-label">
-                                            <span>{repoLeft?.name || 'repo1'} : </span>
+                                            <span>{repoLeft?.full_name || 'repo1'} : </span>
                                             <strong>
                                                 {(hoveredBarIndex === 0 ? leftStats.stars : hoveredBarIndex === 1 ? leftStats.forks : hoveredBarIndex === 2 ? leftStats.contributors : leftStats.commits).toLocaleString()}
                                             </strong>
                                         </div>
                                         <div className="tooltip-item purple-dot-label">
-                                            <span>{repoRight?.name || 'repo2'} : </span>
+                                            <span>{repoRight?.full_name || 'repo2'} : </span>
                                             <strong>
                                                 {(hoveredBarIndex === 0 ? rightStats.stars : hoveredBarIndex === 1 ? rightStats.forks : hoveredBarIndex === 2 ? rightStats.contributors : rightStats.commits).toLocaleString()}
                                             </strong>
@@ -333,11 +333,11 @@ export default function ComparePage() {
                             <div className="chart-legend">
                                 <div className="legend-item">
                                     <span className="legend-color-box bg-blue"></span>
-                                    <span className="legend-label-text">{repoLeft?.name || 'repo1'}</span>
+                                    <span className="legend-label-text">{repoLeft?.full_name || 'repo1'}</span>
                                 </div>
                                 <div className="legend-item">
                                     <span className="legend-color-box bg-purple"></span>
-                                    <span className="legend-label-text">{repoRight?.name || 'repo2'}</span>
+                                    <span className="legend-label-text">{repoRight?.full_name || 'repo2'}</span>
                                 </div>
                             </div>
                         </div>
@@ -368,8 +368,8 @@ export default function ComparePage() {
                                             itemStyle={{ fontWeight: 'bold' }}
                                         />
 
-                                        <Radar name={repoLeft?.name || 'Repo 1'} dataKey="repo1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={2.5} dot={{ r: 4, fill: '#3b82f6', strokeWidth: 0 }} style={{ filter: 'url(#neon-glow-compare)' }} />
-                                        <Radar name={repoRight?.name || 'Repo 2'} dataKey="repo2" stroke="#a855f7" fill="#a855f7" fillOpacity={0.15} strokeWidth={2.5} dot={{ r: 4, fill: '#a855f7', strokeWidth: 0 }} style={{ filter: 'url(#neon-glow-compare)' }} />
+                                        <Radar name={repoLeft?.full_name || 'Repo 1'} dataKey="repo1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={2.5} dot={{ r: 4, fill: '#3b82f6', strokeWidth: 0 }} style={{ filter: 'url(#neon-glow-compare)' }} />
+                                        <Radar name={repoRight?.full_name || 'Repo 2'} dataKey="repo2" stroke="#a855f7" fill="#a855f7" fillOpacity={0.15} strokeWidth={2.5} dot={{ r: 4, fill: '#a855f7', strokeWidth: 0 }} style={{ filter: 'url(#neon-glow-compare)' }} />
                                     </RadarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -378,11 +378,11 @@ export default function ComparePage() {
                             <div className="chart-legend">
                                 <div className="legend-item">
                                     <span className="legend-color-box bg-blue"></span>
-                                    <span className="legend-label-text">{repoLeft?.name || 'repo1'}</span>
+                                    <span className="legend-label-text">{repoLeft?.full_name || 'repo1'}</span>
                                 </div>
                                 <div className="legend-item">
                                     <span className="legend-color-box bg-purple"></span>
-                                    <span className="legend-label-text">{repoRight?.name || 'repo2'}</span>
+                                    <span className="legend-label-text">{repoRight?.full_name || 'repo2'}</span>
                                 </div>
                             </div>
                         </div>

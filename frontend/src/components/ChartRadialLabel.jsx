@@ -62,7 +62,7 @@ export default function ChartRadialLabel({ projet }) {
                 dataKey="browser"
                 className="fill-white capitalize mix-blend-luminosity"
                 fontSize={10}
-                style={{ fontWeight: 600, fill: '#fff' }}
+                style={{ fontWeight: 600, fill: 'var(--text-color)' }}
               />
             </RadialBar>
           </RadialBarChart>

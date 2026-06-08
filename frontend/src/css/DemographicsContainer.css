@@ -148,9 +148,9 @@
 }
 
 .chart-title {
-  color: #0ff;
-  font-weight: 300;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
-  margin-bottom: 10px;
+  font-weight: 700;
+  color: #0ff; /* Néon Cyan */
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+  margin-bottom: 30px;
 }
+

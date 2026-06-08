@@ -16,30 +16,34 @@ function DemographicsChart({ data }) {
     const colors = ['#06b6d4', '#3b82f6', '#8b5cf6', '#a855f7', '#d946ef'];
 
     return (
-        <div style={{ width: '100%', height: 250 }}>
-            <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={top5Countries} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <XAxis type="number" hide /> {/* On cache l'axe X pour un style plus épuré */}
-                    <YAxis 
-                        dataKey="country" 
-                        type="category" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{ fill: '#e2e8f0', fontSize: 14, fontWeight: 500 }} 
-                        width={100}
-                    />
-                    <Tooltip 
-                        cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
-                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#3b82f6', borderRadius: '8px' }}
-                        itemStyle={{ color: '#e2e8f0' }}
-                    />
-                    <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
-                        {top5Countries.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                        ))}
-                    </Bar>
-                </BarChart>
-            </ResponsiveContainer>
+        <div>
+            <h1 className="chart-title">Contributeurs par Pays</h1>
+            <div style={{ width: '100%', height: 250 }}>
+                
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={top5Countries} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <XAxis type="number" hide /> {/* On cache l'axe X pour un style plus épuré */}
+                        <YAxis 
+                            dataKey="country" 
+                            type="category" 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{ fill: 'var(--text-muted)', fontSize: 14, fontWeight: 500 }} 
+                            width={100}
+                        />
+                        <Tooltip 
+                            cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
+                            contentStyle={{ backgroundColor: '#0f172a', borderColor: '#3b82f6', borderRadius: '8px' }}
+                            itemStyle={{ color: '#e2e8f0' }}
+                        />
+                        <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
+                            {top5Countries.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 }
