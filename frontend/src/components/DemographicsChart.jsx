@@ -31,6 +31,7 @@ function DemographicsChart({ data }) {
                     <Tooltip 
                         cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
                         contentStyle={{ backgroundColor: '#0f172a', borderColor: '#3b82f6', borderRadius: '8px' }}
+                        itemStyle={{ color: '#e2e8f0' }}
                     />
                     <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
                         {top5Countries.map((entry, index) => (
