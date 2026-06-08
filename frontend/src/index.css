@@ -12,6 +12,19 @@
   --border-color: #2a2d35;
   --input-bg: #1a1d24;
   --text-muted: #a0aabf;
+  
+  /* Chart colors */
+  --chart-1: #93c5fd; /* Lightest Blue */
+  --chart-2: #60a5fa; /* Light Blue */
+  --chart-3: #3b82f6; /* Medium Blue */
+  --chart-4: #2563eb; /* Dark Blue */
+  --chart-5: #1d4ed8; /* Darkest Blue */
+  
+  --color-chrome: var(--chart-1);
+  --color-safari: var(--chart-2);
+  --color-firefox: var(--chart-3);
+  --color-edge: var(--chart-4);
+  --color-other: var(--chart-5);
 }
 
 .light-theme {
@@ -20,6 +33,19 @@
   --border-color: #e5e7eb;
   --input-bg: #ffffff;
   --text-muted: #4b5563;
+  
+  /* Chart colors */
+  --chart-1: #bfdbfe;
+  --chart-2: #93c5fd;
+  --chart-3: #60a5fa;
+  --chart-4: #3b82f6;
+  --chart-5: #1d4ed8;
+  
+  --color-chrome: var(--chart-1);
+  --color-safari: var(--chart-2);
+  --color-firefox: var(--chart-3);
+  --color-edge: var(--chart-4);
+  --color-other: var(--chart-5);
 }
 
 /* Apply the variables */

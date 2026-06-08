@@ -8,6 +8,7 @@ import { FaGithub } from 'react-icons/fa';
 import RadarSanteProjet from '../components/RadarSanteProjet.jsx';
 import RepoHistogram from '../components/RepoHistogram.jsx';
 import DemographicsContainer from '../components/DemographicsContainer.jsx';
+import ChartRadialLabel from '../components/ChartRadialLabel.jsx';
 import '../css/RepoDetails.css';
 
 // Dictionnaire associant les codes ISO 2 des pays à leurs coordonnées centrales (200+ pays)
@@ -481,6 +482,9 @@ export default function RepoDetails() {
           </div>
           <div className='histogram-container'>
             <RepoHistogram projet={projet} />
+          </div>
+          <div className='radial-container'>
+            <ChartRadialLabel projet={projet} />
           </div>
         </div>
         <div className='dashboard-row bottom-graphics'>
