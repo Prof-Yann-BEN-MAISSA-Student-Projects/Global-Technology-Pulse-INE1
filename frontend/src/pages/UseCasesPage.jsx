@@ -106,9 +106,9 @@ export default function UseCasesPage() {
   };
 
   return (
-    <div className="trending-section repo-details-page" style={{ minHeight: '80vh', padding: '6rem 4rem 4rem 4rem' }}>
+    <div className="trending-section repo-details-page use-cases-container" style={{ minHeight: '80vh' }}>
       
-      <div className="nav-actions" style={{ marginBottom: '2rem' }}>
+      <div className="nav-actions" style={{ marginBottom: '2rem', width: '100%' }}>
         <button className="btn-retour" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Retourner
         </button>
@@ -138,7 +138,7 @@ export default function UseCasesPage() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '40px', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '15px', flexWrap: 'wrap' }}>
+      <div className="filter-bar" style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '40px', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '15px', flexWrap: 'wrap' }}>
         <FiFilter style={{ color: '#0ff', fontSize: '1.5rem' }} />
         <h3 style={{ margin: 0, color: '#fff' }}>Filtres Personnalisés :</h3>
         
