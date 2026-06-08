@@ -15,7 +15,13 @@ const projectSchema = new mongoose.Schema({
     history: [{
         date: { type: Date, default: Date.now },
         stars: Number
-    }]
+    }],
+    demographics: [{
+        country: String,
+        count: Number
+    }],
+    domainTags: [String],
+    countryTags: [String]
 }, { timestamps: true });
 
 

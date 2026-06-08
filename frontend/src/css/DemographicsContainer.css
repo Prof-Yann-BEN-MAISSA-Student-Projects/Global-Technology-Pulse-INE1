@@ -1,0 +1,156 @@
+/* DemographicsContainer.css */
+
+.demographics-container {
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 255, 255, 0.05);
+  
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 450px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.radar-wrapper, .chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Animation CSS du Radar --- */
+.radar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 255, 0.4); /* Bordure Néon Cyan */
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2), inset 0 0 25px rgba(0, 255, 255, 0.2);
+  margin-bottom: 30px;
+  background-color: rgba(0, 20, 30, 0.4);
+}
+
+/* Le balayage du radar (sweep effect) */
+.radar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Dégradé conique transparent vers Violet puis Cyan pour le faisceau */
+  background: conic-gradient(from 0deg, transparent 70%, rgba(138, 43, 226, 0.4) 95%, rgba(0, 255, 255, 0.9) 100%);
+  animation: scan 2s linear infinite;
+}
+
+/* Ligne Horizontale du radar */
+.radar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+/* Ligne Verticale du radar */
+.radar-v-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  z-index: 2;
+}
+
+/* Cercle concentrique intérieur */
+.radar-circle-inner {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(138, 43, 226, 0.5); /* Violet Cyberpunk */
+  box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.2);
+  z-index: 2;
+}
+
+@keyframes scan {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Style du Texte de Console --- */
+.console-text {
+  font-family: 'Courier New', Courier, monospace;
+  color: #0ff; /* Néon Cyan */
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.8), 0 0 15px rgba(0, 255, 255, 0.4);
+  font-size: 1rem;
+  letter-spacing: 1.5px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.sub-text {
+  font-size: 0.8rem;
+  color: #b366ff; /* Accent Violet */
+  text-shadow: 0 0 5px rgba(138, 43, 226, 0.8);
+  opacity: 0.8;
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Placeholder chart (pour la simulation) */
+.demographics-chart-placeholder {
+  text-align: center;
+  color: #fff;
+}
+
+.chart-title {
+  color: #0ff;
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+  margin-bottom: 10px;
+}

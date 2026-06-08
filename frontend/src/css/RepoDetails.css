@@ -16,6 +16,8 @@
 .nav-actions {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 .btn-retour {
@@ -37,6 +39,27 @@
     background-color: #3b82f6;
     color: #ffffff;
     transform: translateX(-4px);
+}
+
+.btn-ajouter {
+    background-color: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: #8b5cf6;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-ajouter:hover {
+    background-color: #8b5cf6;
+    color: #ffffff;
+    transform: translateX(4px);
 }
 
 /* ── Overview Header Banner ──────────────── */

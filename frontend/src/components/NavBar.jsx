@@ -52,19 +52,28 @@ function NavBar({ isDarkMode, toggleTheme }) {
                         Trending
                     </Link>
                 </li>
-                <li>About Us</li>
+                <li>
+                    <Link to="/usecases" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        Use Cases
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/about" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        About Us
+                    </Link>
+                </li>
             </ul>
             <div className="search-container">
-                <FiSearch 
-                    className={`search-icon ${loading ? 'spinning' : ''}`} 
+                <FiSearch
+                    className={`search-icon ${loading ? 'spinning' : ''}`}
                     onClick={handleSearch}
                     style={{ cursor: 'pointer' }}
                 />
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     placeholder={loading ? "Searching..." : "Search repositories..."}
-                    value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    value={searchTerm}
                     onKeyDown={handleSearch}
                     disabled={loading}
                 />

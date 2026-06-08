@@ -7,6 +7,7 @@ import { FiStar, FiGitBranch, FiExternalLink, FiArrowLeft, FiActivity, FiCode } 
 import { FaGithub } from 'react-icons/fa';
 import RadarSanteProjet from '../components/RadarSanteProjet.jsx';
 import RepoHistogram from '../components/RepoHistogram.jsx';
+import DemographicsContainer from '../components/DemographicsContainer.jsx';
 import '../css/RepoDetails.css';
 
 // Dictionnaire associant les codes ISO 2 des pays à leurs coordonnées centrales (200+ pays)
@@ -175,7 +176,7 @@ export default function RepoDetails() {
   const [loading, setLoading] = useState(!locationState?.projet);
 
   // État pour le Globe
-  const [coordonnees, setCoordonnees] = useState(defaultHubLocations);
+  const [coordonnees, setCoordonnees] = useState([]);
   const [globeLoading, setGlobeLoading] = useState(false);
 
   // 1. Récupération des détails complets du projet
@@ -257,21 +258,47 @@ export default function RepoDetails() {
           if (coordonneesFormatees.length > 0) {
             setCoordonnees(coordonneesFormatees);
           } else {
-            setCoordonnees(defaultHubLocations);
+            setCoordonnees([]);
           }
         } else {
-          setCoordonnees(defaultHubLocations);
+          setCoordonnees([]);
         }
         setGlobeLoading(false);
       } catch {
-        console.log("OSSInsight API non accessible pour ce dépôt, utilisation des hubs mondiaux actifs par défaut.");
-        setCoordonnees(defaultHubLocations);
+        console.log("OSSInsight API non accessible pour ce dépôt.");
+        setCoordonnees([]);
         setGlobeLoading(false);
       }
     };
 
     fetchLocations();
   }, [decodedFullName]);
+
+  // Fallback au cas où le globe est vide après l'appel OSSInsight
+  const handleDemographicsLoaded = (locations) => {
+    setCoordonnees(prev => {
+      // Si le globe n'est pas vide (OSSInsight a marché), on ne touche à rien
+      if (prev && prev.length > 0) return prev;
+      
+      // Sinon, on utilise la vraie donnée des contributeurs (obtenue via DemographicsContainer)
+      const globeData = {};
+      locations.forEach(loc => {
+        if (!loc.lat || !loc.lon) return;
+        const key = `${loc.lat}-${loc.lon}`;
+        if (!globeData[key]) {
+          globeData[key] = { lat: loc.lat, lng: loc.lon, weight: 0.1, creators: 0, code: loc.country };
+        }
+        globeData[key].weight += 0.05;
+        globeData[key].creators += 1;
+      });
+      
+      const finalData = Object.values(globeData).map(d => ({
+        ...d,
+        weight: Math.min(d.weight, 1.0)
+      }));
+      return finalData;
+    });
+  };
 
   if (loading) {
     return (
@@ -293,6 +320,36 @@ export default function RepoDetails() {
     );
   }
 
+  const addToDatabase = async (projet) => {
+        try {            
+          if (projet._id) {
+            alert("Ce projet est déjà dans la base de données.");
+            return;
+          }
+          await axios.post('http://localhost:2500/api/projects', {
+                avatar_url: projet.avatar_url || (projet.owner && projet.owner.avatar_url),
+                full_name: projet.full_name,
+                description: projet.description,
+                language: projet.language,
+                stargazers_count: projet.stargazers_count,
+                forks_count: projet.forks_count,
+                watchers_count: projet.watchers_count,
+                open_issues_count: projet.open_issues_count,
+                size: projet.size,
+                contributors_url: projet.contributors_url || `https://api.github.com/repos/${projet.full_name}/contributors`
+            });
+          alert("Projet ajouté à la base de données !");
+
+        } catch (error) {
+            console.error("Erreur lors de l'ajout du projet à la base de données :", error);
+            if (error.response && error.response.status === 400 && error.response.data.details && error.response.data.details.includes('duplicate')) {
+                alert("Ce projet est déjà dans la base de données.");
+            } else {
+                alert("Erreur lors de l'ajout du projet à la base de données.");
+            }
+        }
+  };
+
   // Extraction propre de l'auteur et du nom
   const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Auteur', projet.name || 'Projet'];
   const starsCount = projet.stargazers_count !== undefined ? projet.stargazers_count : (projet.stars || 12000);
@@ -304,6 +361,9 @@ export default function RepoDetails() {
       <div className="nav-actions">
         <button className="btn-retour" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Retourner
+        </button>
+        <button className="btn-ajouter" onClick={() => addToDatabase(projet)}>
+          <FiStar /> Add to Database 
         </button>
       </div>
 
@@ -390,6 +450,7 @@ export default function RepoDetails() {
               donnees={projet.history && projet.history.length > 1 ? projet.history : undefined}
               starsCount={starsCount}
               forksCount={forksCount}
+              nomProjet={projet.full_name}
             />
           </div>
 
@@ -402,7 +463,8 @@ export default function RepoDetails() {
                 width={380}
                 height={380}
                 backgroundColor="rgba(0,0,0,0)"
-                globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
                 ringsData={coordonnees}
                 ringColor={() => '#3b82f6'}
                 // Taille de l'onde dynamique basée sur le pourcentage de créateurs d'issues de ce pays !
@@ -419,6 +481,11 @@ export default function RepoDetails() {
           </div>
           <div className='histogram-container'>
             <RepoHistogram projet={projet} />
+          </div>
+        </div>
+        <div className='dashboard-row bottom-graphics'>
+          <div className='demographics-container-wrapper'>
+            <DemographicsContainer nomProjet={projet.full_name} onDataLoaded={handleDemographicsLoaded} />
           </div>
         </div>
       </div>

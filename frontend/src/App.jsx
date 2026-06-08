@@ -8,6 +8,9 @@ import ComparePage from './pages/ComparePage';
 import TrendingPage from './pages/TrendingPage';
 import CollectionPage from './pages/CollectionPage';
 import SearchPage from './pages/SearchPage';
+import StatisticsPage from './pages/StatisticsPage';
+import AboutPage from './pages/AboutPage';
+import UseCasesPage from './pages/UseCasesPage';
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -23,8 +26,11 @@ export default function App() {
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/repo/:repoId" element={<RepoDetails />} />
         <Route path="/trending" element={<TrendingPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/collection/:collectionName" element={<CollectionPage />} />
         <Route path="/search/:searchTerm" element={<SearchPage />} />
+        <Route path="/usecases" element={<UseCasesPage />} />
       </Routes>
       
       {/* The Footer stays on every page */}

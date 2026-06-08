@@ -3,9 +3,9 @@ const Project = require('../models/Project.js');
 const { fetchGithubData } = require('../services/githubService');
 require('dotenv').config();
 
-async function getProjects(req, res){
-    try{
-        const projects = await Project.find({}, {history: 0});
+async function getProjects(req, res) {
+    try {
+        const projects = await Project.find({}, { history: 0 });
         res.status(200).json(projects);
     } catch (erreur) {
         console.error("Erreur lors du GET :", erreur);
@@ -13,71 +13,99 @@ async function getProjects(req, res){
     }
 }
 
-async function getProfiles(req, res){
-    try{
+async function filterByTags(req, res) {
+    try {
+        const { domain, country } = req.query;
+        let query = {};
+
+        if (domain) {
+            query.domainTags = domain;
+        }
+        if (country) {
+            query.countryTags = country;
+        }
+
+        // Trouver les projets correspondant aux tags et trier par stars
+        const projects = await Project.find(query).sort({ stargazers_count: -1 });
+        res.status(200).json(projects);
+    } catch (erreur) {
+        console.error("Erreur lors du filtrage par tags :", erreur);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+}
+
+async function getProfiles(req, res) {
+    try {
         const nomComplet = decodeURIComponent(req.params.nomDuProjet);
         const urlGithub = `https://api.github.com/repos/${nomComplet}/contributors?per_page=100`;
 
         const resp = await axios.get(urlGithub, {
             headers: {
                 'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json' 
+                'Accept': 'application/vnd.github.v3+json'
             }
         });
 
         const contributors = resp.data;
         const coordonneesFinales = [];
 
-        for (const contributor of contributors){
+        for (const contributor of contributors) {
             const userResp = await axios.get(contributor.url, {
                 headers: {
                     'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json' 
+                    'Accept': 'application/vnd.github.v3+json'
                 }
-            }); 
-            
+            });
+
             const user = userResp.data;
 
-            if (user.location != null){
+            if (user.location != null) {
                 const loca = user.location;
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(loca)}`;
-                
+
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                
+
                 const resp = await axios.get(url, {
                     headers: { 'User-Agent': 'TechPulse-INPT-App' }
                 });
-                
+
                 const location = resp.data;
-                if (location.length != 0){
+                if (location.length != 0) {
                     const lat = location[0].lat;
                     const lon = location[0].lon;
-                    const finalLocation = {lat, lon};
+
+                    let countryName = loca;
+                    if (location[0].display_name) {
+                        const parts = location[0].display_name.split(',');
+                        countryName = parts[parts.length - 1].trim();
+                    }
+
+                    const finalLocation = { lat, lon, country: countryName };
                     coordonneesFinales.push(finalLocation);
                 }
             }
-            
-            if (coordonneesFinales.length == 20){
+
+            if (coordonneesFinales.length == 20) {
                 break;
             }
         }
         res.status(200).json(coordonneesFinales);
-        
-    } catch(err){
+
+    } catch (err) {
         console.error("Erreur dans getProfiles :", err.message);
         res.status(400).json({ message: "Erreur lors du GET", details: err.message });
     }
 }
 
-async function getOneProject(req, res) { 
+async function getOneProject(req, res) {
     try {
         const nomComplet = decodeURIComponent(req.params.nomDuProjet);
         let projet = await Project.findOne({ full_name: nomComplet });
-        
+
         if (!projet) {
             console.log(`🔍 [API] Projet non trouvé en base. Récupération depuis GitHub : ${nomComplet}`);
             const nouvellesDonnees = await fetchGithubData(nomComplet);
-            
+
             if (nouvellesDonnees) {
                 // Créer et enregistrer le projet dans MongoDB
                 projet = new Project({
@@ -93,7 +121,7 @@ async function getOneProject(req, res) {
                 return res.status(404).json({ message: "Projet introuvable sur GitHub ni dans la base de données." });
             }
         }
-        
+
         res.status(200).json(projet);
     } catch (erreur) {
         console.error("Erreur lors de la récupération du projet :", erreur);
@@ -101,18 +129,18 @@ async function getOneProject(req, res) {
     }
 }
 
-async function searchApi(req, res){
-    try{
+async function searchApi(req, res) {
+    try {
         const motCle = req.params.motCle;
         const url = `https://api.github.com/search/repositories?q=${motCle}`;
 
         const resp = await axios.get(url, {
             headers: {
                 'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json' 
+                'Accept': 'application/vnd.github.v3+json'
             }
         });
-                
+
         const projectList = resp.data.items;
 
         const finalProjectsList = projectList.map(projet => ({
@@ -125,10 +153,10 @@ async function searchApi(req, res){
             open_issues_count: projet.open_issues_count,
             avatar_url: projet.owner?.avatar_url
         }));
-        
+
         res.status(200).json(finalProjectsList);
     }
-    catch(e){
+    catch (e) {
         console.error("Erreur lors du GET searchApi :", e);
         res.status(500).json({ message: "Erreur serveur" });
     }
@@ -148,18 +176,18 @@ async function createProject(req, res) {
 async function getTrendingProjects(req, res) {
     try {
         console.log("🔥 [API] Récupération des dépôts trending...");
-        
+
         // 1. Appeler l'API OSSInsight pour obtenir les dépôts hot/trending
         const hotResponse = await axios.get('https://api.ossinsight.io/v1/collections/hot/', {
             headers: { 'Accept': 'application/json' }
         });
-        
+
         if (!hotResponse.data || !hotResponse.data.data || !hotResponse.data.data.rows) {
             throw new Error("Format de réponse OSSInsight invalide");
         }
-        
+
         const rows = hotResponse.data.data.rows;
-        
+
         // 2. Extraire les 6 premiers dépôts uniques
         const uniqueRepoNames = [];
         for (const row of rows) {
@@ -170,14 +198,14 @@ async function getTrendingProjects(req, res) {
                 break;
             }
         }
-        
+
         console.log("👉 Dépôts trending sélectionnés :", uniqueRepoNames);
-        
+
         // 3. Récupérer les détails de ces 6 dépôts (depuis la base de données ou GitHub)
         const trendingProjects = [];
         for (const repoName of uniqueRepoNames) {
             let projet = await Project.findOne({ full_name: repoName });
-            
+
             if (!projet) {
                 console.log(`🔍 [API-Trending] Projet ${repoName} non trouvé en base. Récupération GitHub...`);
                 const nouvellesDonnees = await fetchGithubData(repoName);
@@ -192,16 +220,16 @@ async function getTrendingProjects(req, res) {
                     await projet.save();
                 }
             }
-            
+
             if (projet) {
                 trendingProjects.push(projet);
             }
         }
-        
+
         res.status(200).json(trendingProjects);
     } catch (err) {
         console.error("❌ Erreur lors de la récupération des dépôts trending :", err.message);
-        
+
         // En cas d'erreur de l'API externe, fallback sur les 6 premiers dépôts de notre base
         try {
             console.log("⚠️ Fallback sur les dépôts de la base locale...");
@@ -256,7 +284,7 @@ async function getTrendingPaginated(req, res) {
                 console.log(`🔍 [API-TrendingPaginated] Projet ${repoName} non trouvé en base. Récupération GitHub...`);
                 // Léger délai pour éviter d'être bloqué
                 await new Promise(resolve => setTimeout(resolve, 200));
-                
+
                 const nouvellesDonnees = await fetchGithubData(repoName);
                 if (nouvellesDonnees) {
                     projet = new Project({
@@ -314,5 +342,6 @@ module.exports = {
     searchApi,
     createProject,
     getTrendingProjects,
-    getTrendingPaginated
+    getTrendingPaginated,
+    filterByTags
 }

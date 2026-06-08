@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 2500;
 const express = require('express');
 const cors = require('cors'); 
 const connectDB = require('./config/db'); 
-const demarrerWorker = require('./services/worker'); 
+const { demarrerWorker, initScheduler } = require('./services/worker'); 
 
 const app = express();
 
@@ -15,7 +15,9 @@ app.use(express.json());
 const projectRoutes = require('./routes/projectRoutes');
 app.use('/api/projects', projectRoutes);
 
-demarrerWorker(); 
+
+demarrerWorker();
+initScheduler();
 
 app.listen(PORT, () => {
     console.log(`Le serveur tourne sur le port ${PORT}`);

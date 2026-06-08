@@ -1,52 +1,92 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import axios from 'axios';
 import '../css/GraphiqueHistorique.css';
 
-// Génère une série de ratios de croissance uniques basés sur les métriques du dépôt
-function generateGrowthCurve(total, seed) {
-  const points = 8;
-  const ratios = [];
-  // Utiliser le seed pour varier la forme de la courbe
-  const growthSpeed = 0.4 + (seed % 37) / 37 * 0.35; // entre 0.4 et 0.75
-  const startRatio = 0.45 + (seed % 23) / 23 * 0.30;  // départ entre 45% et 75%
-  
-  for (let i = 0; i < points; i++) {
-    const t = i / (points - 1); // 0 → 1
-    // Courbe exponentielle avec variation par seed
-    const ratio = startRatio + (1 - startRatio) * Math.pow(t, growthSpeed + 0.3);
-    ratios.push(Math.round(total * Math.min(ratio, 1.0)));
-  }
-  // Forcer le dernier point = total exact
-  ratios[points - 1] = total;
-  return ratios;
-}
-
-export default function GraphiqueHistorique({ donnees, starsCount, forksCount }) {
+export default function GraphiqueHistorique({ donnees, starsCount, forksCount, nomProjet }) {
   const svgRef = useRef(null);
+  const [ossData, setOssData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch OSSInsight historical data (Issue & PR creators)
+  useEffect(() => {
+    if (!nomProjet || !nomProjet.includes('/')) return;
+    let isMounted = true;
+
+    const fetchHistory = async () => {
+      setLoading(true);
+      try {
+        const [author, repo] = nomProjet.split('/');
+        
+        const [issuesRes, prsRes] = await Promise.all([
+          axios.get(`https://api.ossinsight.io/v1/repos/${encodeURIComponent(author)}/${encodeURIComponent(repo)}/issue_creators/history/`),
+          axios.get(`https://api.ossinsight.io/v1/repos/${encodeURIComponent(author)}/${encodeURIComponent(repo)}/pull_request_creators/history/`)
+        ]);
+        
+        const issuesData = issuesRes?.data?.data?.rows || [];
+        const prsData = prsRes?.data?.data?.rows || [];
+        
+        const merged = {};
+        issuesData.forEach(d => {
+          if (!merged[d.date]) merged[d.date] = { date: d.date, val1: 0, val2: 0 };
+          merged[d.date].val1 += parseInt(d.issue_creators || 0, 10);
+        });
+        prsData.forEach(d => {
+          if (!merged[d.date]) merged[d.date] = { date: d.date, val1: 0, val2: 0 };
+          merged[d.date].val2 += parseInt(d.pull_request_creators || 0, 10);
+        });
+        
+        const finalData = Object.values(merged).sort((a,b) => new Date(a.date) - new Date(b.date));
+        
+        if (isMounted && finalData.length >= 2) {
+           setOssData(finalData);
+        }
+      } catch (err) {
+        console.log("OSSInsight History non accessible pour ce dépôt.");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    fetchHistory();
+    
+    return () => { isMounted = false; };
+  }, [nomProjet]);
 
   useEffect(() => {
-    const targetStars = starsCount || 50000;
-    const targetForks = forksCount || 8000;
-
-    // Générer des courbes UNIQUES pour chaque dépôt à partir de ses métriques réelles
-    const starsSeed = targetStars % 100 + targetForks % 50;
-    const forksSeed = targetForks % 100 + targetStars % 30;
+    if (loading) return;
     
-    const starsValues = generateGrowthCurve(targetStars, starsSeed);
-    const forksValues = generateGrowthCurve(targetForks, forksSeed + 17); // +17 pour décaler la forme
-
-    const now = new Date();
-    const dataToRender = [];
-    for (let i = 0; i < 8; i++) {
-      dataToRender.push({
-        date: new Date(now.getFullYear(), now.getMonth() - (7 - i), 1),
-        etoiles: starsValues[i],
-        forks: forksValues[i]
-      });
-    }
-
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
+
+    // Priorité à OSSInsight, sinon fallback sur 'donnees' de la base
+    let dataToRender = [];
+    let isOss = false;
+
+    if (ossData && ossData.length >= 2) {
+      dataToRender = ossData.map(d => ({
+        date: new Date(d.date),
+        etoiles: d.val1,
+        forks: d.val2
+      }));
+      isOss = true;
+    } else if (donnees && donnees.length >= 2) {
+      dataToRender = donnees.map(d => ({
+        date: new Date(d.date),
+        etoiles: d.stars || d.etoiles || 0,
+        forks: d.forks || 0
+      })).sort((a, b) => a.date - b.date);
+    }
+
+    if (dataToRender.length < 2) {
+      svg.append("text")
+         .attr("x", 350)
+         .attr("y", 175)
+         .attr("text-anchor", "middle")
+         .style("fill", "#64748b")
+         .style("font-size", "14px")
+         .text("Données historiques insuffisantes pour tracer une évolution");
+      return;
+    }
 
     const largeur = 700;
     const hauteur = 350;
@@ -62,32 +102,30 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .domain(d3.extent(dataToRender, d => d.date))
       .range([0, largeurInterne]);
 
-    // --- ÉCHELLE Y GAUCHE (Étoiles — jaune) ---
+    // --- ÉCHELLE Y GAUCHE ---
     const minStars = d3.min(dataToRender, d => d.etoiles);
     const maxStars = d3.max(dataToRender, d => d.etoiles);
     const echelleYStars = d3.scaleLinear()
-      .domain([minStars * 0.95, maxStars * 1.05])
+      .domain([Math.min(0, minStars * 0.95), maxStars * 1.05])
       .range([hauteurInterne, 0]);
 
-    // --- ÉCHELLE Y DROITE (Forks — bleu) ---
+    // --- ÉCHELLE Y DROITE ---
     const minForks = d3.min(dataToRender, d => d.forks);
     const maxForks = d3.max(dataToRender, d => d.forks);
     const echelleYForks = d3.scaleLinear()
-      .domain([minForks * 0.90, maxForks * 1.05])
+      .domain([Math.min(0, minForks * 0.90), maxForks * 1.05])
       .range([hauteurInterne, 0]);
 
     // --- AXES ---
-    // Axe X — mois
     g.append("g")
       .attr("transform", `translate(0,${hauteurInterne})`)
-      .call(d3.axisBottom(echelleX).ticks(6).tickFormat(d3.timeFormat("%B")))
+      .call(d3.axisBottom(echelleX).ticks(6).tickFormat(d3.timeFormat("%b %Y")))
       .attr("color", "#64748b")
       .style("font-size", "11px");
 
-    // Axe Y Gauche — Étoiles (jaune doré)
     g.append("g")
       .call(d3.axisLeft(echelleYStars).ticks(5).tickFormat(d => {
-        if (d >= 1000) return (d / 1000).toFixed(0) + "k";
+        if (d >= 1000) return (d / 1000).toFixed(1) + "k";
         return d;
       }))
       .attr("color", "#eab308")
@@ -95,11 +133,10 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .style("font-size", "12px")
       .call(g => g.select(".domain").remove());
 
-    // Axe Y Droit — Forks (bleu)
     g.append("g")
       .attr("transform", `translate(${largeurInterne},0)`)
       .call(d3.axisRight(echelleYForks).ticks(5).tickFormat(d => {
-        if (d >= 1000) return (d / 1000).toFixed(0) + "k";
+        if (d >= 1000) return (d / 1000).toFixed(1) + "k";
         return d;
       }))
       .attr("color", "#3b82f6")
@@ -130,7 +167,6 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
         .attr("stroke-dashoffset", 0);
     };
 
-    // Courbe Stars (jaune)
     const pathStars = g.append("path")
       .datum(dataToRender)
       .attr("fill", "none")
@@ -139,7 +175,6 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .attr("d", ligneStars);
     animerLigne(pathStars);
 
-    // Courbe Forks (bleu)
     const pathForks = g.append("path")
       .datum(dataToRender)
       .attr("fill", "none")
@@ -148,14 +183,24 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount })
       .attr("d", ligneForks);
     animerLigne(pathForks);
 
-  }, [starsCount, forksCount, donnees]);
+  }, [starsCount, forksCount, donnees, ossData, loading]);
+
+  const hasOss = ossData && ossData.length >= 2;
 
   return (
     <div className='graph-hist'>
       <h3 className='graph-title' style={{ textAlign: 'center', fontSize: '1.15rem', marginBottom: '1rem' }}>
-        Évolution : <span style={{color: '#eab308'}}>Étoiles</span> vs <span style={{color: '#3b82f6'}}>Forks</span>
+        {hasOss ? (
+          <>Évolution Historique : <span style={{color: '#eab308'}}>Créateurs Issues</span> vs <span style={{color: '#3b82f6'}}>Créateurs PRs</span></>
+        ) : (
+          <>Évolution : <span style={{color: '#eab308'}}>Étoiles</span> vs <span style={{color: '#3b82f6'}}>Forks</span></>
+        )}
       </h3>
-      <svg ref={svgRef} viewBox="0 0 700 350" style={{ width: '100%', maxWidth: '700px', height: 'auto' }} />
+      {loading ? (
+        <p style={{ textAlign: 'center', color: '#64748b', marginTop: '4rem' }}>Chargement de l'historique depuis OSSInsight...</p>
+      ) : (
+        <svg ref={svgRef} viewBox="0 0 700 350" style={{ width: '100%', maxWidth: '700px', height: 'auto' }} />
+      )}
     </div>
   );
 }
