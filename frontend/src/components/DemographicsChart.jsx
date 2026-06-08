@@ -17,7 +17,7 @@ function DemographicsChart({ data }) {
 
     return (
         <div>
-            <h1 className="chart-title">Contributeurs par Pays</h1>
+            <h1 className="chart-title">Stars par Pays</h1>
             <div style={{ width: '100%', height: 250 }}>
                 
                 <ResponsiveContainer width="100%" height="100%">
