@@ -1,10 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
-import * as d3 from 'd3';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import '../css/GraphiqueHistorique.css';
 
 export default function GraphiqueHistorique({ donnees, starsCount, forksCount, nomProjet }) {
-  const svgRef = useRef(null);
   const [ossData, setOssData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -36,10 +35,10 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
           merged[d.date].val2 += parseInt(d.pull_request_creators || 0, 10);
         });
         
-        const finalData = Object.values(merged).sort((a,b) => new Date(a.date) - new Date(b.date));
+        const finalData = Object.values(merged).sort((a, b) => new Date(a.date) - new Date(b.date));
         
         if (isMounted && finalData.length >= 2) {
-           setOssData(finalData);
+          setOssData(finalData);
         }
       } catch (err) {
         console.log("OSSInsight History non accessible pour ce dépôt.");
@@ -52,155 +51,195 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
     return () => { isMounted = false; };
   }, [nomProjet]);
 
-  useEffect(() => {
-    if (loading) return;
-    
-    const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove();
+  // Priority to OSSInsight data, fallback to database history data
+  let dataToRender = [];
+  let hasOss = false;
 
-    // Priorité à OSSInsight, sinon fallback sur 'donnees' de la base
-    let dataToRender = [];
-    let isOss = false;
+  if (ossData && ossData.length >= 2) {
+    dataToRender = ossData.map(d => ({
+      date: d.date,
+      val1: d.val1, // Issues
+      val2: d.val2  // PRs
+    }));
+    hasOss = true;
+  } else if (donnees && donnees.length >= 2) {
+    dataToRender = [...donnees].map(d => ({
+      date: d.date ? new Date(d.date).toISOString().split('T')[0] : '',
+      val1: d.stars || d.etoiles || 0, // Stars
+      val2: d.forks || 0               // Forks
+    })).sort((a, b) => new Date(a.date) - new Date(b.date));
+  }
 
-    if (ossData && ossData.length >= 2) {
-      dataToRender = ossData.map(d => ({
-        date: new Date(d.date),
-        etoiles: d.val1,
-        forks: d.val2
-      }));
-      isOss = true;
-    } else if (donnees && donnees.length >= 2) {
-      dataToRender = donnees.map(d => ({
-        date: new Date(d.date),
-        etoiles: d.stars || d.etoiles || 0,
-        forks: d.forks || 0
-      })).sort((a, b) => a.date - b.date);
+  // Calculate dynamic date range text for the footer
+  let dateRangeText = "Période inconnue";
+  if (dataToRender.length >= 2) {
+    try {
+      const firstDate = new Date(dataToRender[0].date);
+      const lastDate = new Date(dataToRender[dataToRender.length - 1].date);
+      const options = { month: 'long', year: 'numeric' };
+      dateRangeText = `${firstDate.toLocaleDateString('fr-FR', options)} - ${lastDate.toLocaleDateString('fr-FR', options)}`;
+    } catch (e) {
+      console.error("Error formatting date range", e);
     }
+  }
 
-    if (dataToRender.length < 2) {
-      svg.append("text")
-         .attr("x", 350)
-         .attr("y", 175)
-         .attr("text-anchor", "middle")
-         .style("fill", "#64748b")
-         .style("font-size", "14px")
-         .text("Données historiques insuffisantes pour tracer une évolution");
-      return;
-    }
+  if (loading) {
+    return (
+      <div className="graph-hist" style={{ height: '390px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Chargement de l'historique depuis OSSInsight...</p>
+      </div>
+    );
+  }
 
-    const largeur = 700;
-    const hauteur = 350;
-    const marges = { haut: 40, droite: 65, bas: 45, gauche: 65 };
-    const largeurInterne = largeur - marges.gauche - marges.droite;
-    const hauteurInterne = hauteur - marges.haut - marges.bas;
-
-    const g = svg.append("g")
-      .attr("transform", `translate(${marges.gauche},${marges.haut})`);
-
-    // --- ÉCHELLE X (Temps) ---
-    const echelleX = d3.scaleTime()
-      .domain(d3.extent(dataToRender, d => d.date))
-      .range([0, largeurInterne]);
-
-    // --- ÉCHELLE Y GAUCHE ---
-    const minStars = d3.min(dataToRender, d => d.etoiles);
-    const maxStars = d3.max(dataToRender, d => d.etoiles);
-    const echelleYStars = d3.scaleLinear()
-      .domain([Math.min(0, minStars * 0.95), maxStars * 1.05])
-      .range([hauteurInterne, 0]);
-
-    // --- ÉCHELLE Y DROITE ---
-    const minForks = d3.min(dataToRender, d => d.forks);
-    const maxForks = d3.max(dataToRender, d => d.forks);
-    const echelleYForks = d3.scaleLinear()
-      .domain([Math.min(0, minForks * 0.90), maxForks * 1.05])
-      .range([hauteurInterne, 0]);
-
-    // --- AXES ---
-    g.append("g")
-      .attr("transform", `translate(0,${hauteurInterne})`)
-      .call(d3.axisBottom(echelleX).ticks(6).tickFormat(d3.timeFormat("%b %Y")))
-      .attr("color", "#64748b")
-      .style("font-size", "11px");
-
-    g.append("g")
-      .call(d3.axisLeft(echelleYStars).ticks(5).tickFormat(d => {
-        if (d >= 1000) return (d / 1000).toFixed(1) + "k";
-        return d;
-      }))
-      .attr("color", "#eab308")
-      .style("font-weight", "bold")
-      .style("font-size", "12px")
-      .call(g => g.select(".domain").remove());
-
-    g.append("g")
-      .attr("transform", `translate(${largeurInterne},0)`)
-      .call(d3.axisRight(echelleYForks).ticks(5).tickFormat(d => {
-        if (d >= 1000) return (d / 1000).toFixed(1) + "k";
-        return d;
-      }))
-      .attr("color", "#3b82f6")
-      .style("font-weight", "bold")
-      .style("font-size", "12px")
-      .call(g => g.select(".domain").remove());
-
-    // --- COURBES ---
-    const ligneStars = d3.line()
-      .x(d => echelleX(d.date))
-      .y(d => echelleYStars(d.etoiles))
-      .curve(d3.curveMonotoneX);
-
-    const ligneForks = d3.line()
-      .x(d => echelleX(d.date))
-      .y(d => echelleYForks(d.forks))
-      .curve(d3.curveMonotoneX);
-
-    // Animation
-    const animerLigne = (chemin) => {
-      const node = chemin.node();
-      if (!node) return;
-      const longueur = node.getTotalLength();
-      chemin
-        .attr("stroke-dasharray", `${longueur} ${longueur}`)
-        .attr("stroke-dashoffset", longueur)
-        .transition().duration(2000).ease(d3.easeCubicOut)
-        .attr("stroke-dashoffset", 0);
-    };
-
-    const pathStars = g.append("path")
-      .datum(dataToRender)
-      .attr("fill", "none")
-      .attr("stroke", "#eab308")
-      .attr("stroke-width", 2.5)
-      .attr("d", ligneStars);
-    animerLigne(pathStars);
-
-    const pathForks = g.append("path")
-      .datum(dataToRender)
-      .attr("fill", "none")
-      .attr("stroke", "#3b82f6")
-      .attr("stroke-width", 2.5)
-      .attr("d", ligneForks);
-    animerLigne(pathForks);
-
-  }, [starsCount, forksCount, donnees, ossData, loading]);
-
-  const hasOss = ossData && ossData.length >= 2;
+  if (dataToRender.length < 2) {
+    return (
+      <div className="graph-hist" style={{ height: '390px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Données historiques insuffisantes pour tracer une évolution</p>
+      </div>
+    );
+  }
 
   return (
-    <div className='graph-hist'>
-      <h3 className='graph-title' style={{ textAlign: 'center', fontSize: '1.15rem', marginBottom: '1rem' }}>
-        {hasOss ? (
-          <>Évolution Historique : <span style={{color: '#eab308'}}>Créateurs Issues</span> vs <span style={{color: '#3b82f6'}}>Créateurs PRs</span></>
-        ) : (
-          <>Évolution : <span style={{color: '#eab308'}}>Étoiles</span> vs <span style={{color: '#3b82f6'}}>Forks</span></>
-        )}
-      </h3>
-      {loading ? (
-        <p style={{ textAlign: 'center', color: '#64748b', marginTop: '4rem' }}>Chargement de l'historique depuis OSSInsight...</p>
-      ) : (
-        <svg ref={svgRef} viewBox="0 0 700 350" style={{ width: '100%', maxWidth: '700px', height: 'auto' }} />
-      )}
+    <div className="graph-hist flex flex-col" style={{ width: '100%' }}>
+      {/* Header */}
+      <div style={{ width: '100%', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
+        <h3 className="graph-title" style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>
+          {hasOss ? (
+            <>Évolution Historique : Créateurs Issues vs Créateurs PRs</>
+          ) : (
+            <>Évolution Historique : Étoiles vs Forks</>
+          )}
+        </h3>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>
+          {hasOss 
+            ? "Comparaison mensuelle du nombre de contributeurs d'issues et de pull requests"
+            : "Progression cumulée du nombre d'étoiles et de forks du dépôt"
+          }
+        </p>
+      </div>
+
+      {/* Area Chart Container */}
+      <div style={{ width: '100%', height: 260, position: 'relative' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={dataToRender}
+            margin={{
+              left: 5,
+              right: 5,
+              top: 5,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid vertical={false} stroke="var(--border-color)" opacity={0.5} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+              tickFormatter={(value) => {
+                if (!value) return '';
+                try {
+                  const d = new Date(value);
+                  return d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                } catch {
+                  return value;
+                }
+              }}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+              tickFormatter={(val) => {
+                if (val >= 1000) return (val / 1000).toFixed(1) + 'k';
+                return val;
+              }}
+            />
+            <Tooltip
+              cursor={{ stroke: 'rgba(255, 255, 255, 0.08)' }}
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  return (
+                    <div style={{
+                      backgroundColor: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '0.85rem',
+                      color: 'var(--text-color)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                    }}>
+                      <p style={{ margin: '0 0 6px 0', fontWeight: 600 }}>
+                        {new Date(payload[0].payload.date).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                      </p>
+                      {payload.map((item, idx) => (
+                        <p key={idx} style={{ margin: 0, padding: '2px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: item.color, display: 'inline-block' }}></span>
+                          <span style={{ color: 'var(--text-muted)' }}>{item.name}:</span>
+                          <strong style={{ color: 'var(--text-color)' }}>{item.value.toLocaleString()}</strong>
+                        </p>
+                      ))}
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+            <Area
+              name={hasOss ? "Créateurs PRs" : "Forks"}
+              dataKey="val2"
+              type="natural"
+              fill="var(--chart-2)"
+              fillOpacity={0.25}
+              stroke="var(--chart-2)"
+              strokeWidth={2}
+              stackId="a"
+            />
+            <Area
+              name={hasOss ? "Créateurs Issues" : "Étoiles"}
+              dataKey="val1"
+              type="natural"
+              fill="var(--chart-1)"
+              fillOpacity={0.25}
+              stroke="var(--chart-1)"
+              strokeWidth={2}
+              stackId="a"
+            />
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              content={({ payload }) => (
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '0.5rem', fontSize: '0.8rem' }}>
+                  {payload.map((entry, index) => (
+                    <span key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-muted)' }}>
+                      <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: entry.color, display: 'inline-block' }}></span>
+                      {entry.value}
+                    </span>
+                  ))}
+                </div>
+              )}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        marginTop: '1.25rem',
+        paddingTop: '1rem',
+        borderTop: '1px solid var(--border-color)',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: '0.85rem'
+      }}>
+        <div style={{ color: 'var(--text-muted)' }}>
+          {dateRangeText}
+        </div>
+      </div>
     </div>
   );
 }

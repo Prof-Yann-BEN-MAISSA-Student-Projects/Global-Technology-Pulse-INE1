@@ -1,35 +1,134 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import '../css/RadarSante.css';
 
 export default function RepoHistogram({ projet }) {
-  const data = [
-    { name: 'Stars', value: projet?.stargazers_count || 0, color: '#eab308' },
-    { name: 'Forks', value: projet?.forks_count || 0, color: '#3b82f6' },
-    { name: 'Watchers', value: projet?.watchers_count || 0, color: '#10b981' },
-    { name: 'Issues', value: projet?.open_issues_count || 0, color: '#ef4444' }
+  // Use 5 repository metrics to form the 5 sectors of the variable pie chart
+  const rawData = [
+    { name: 'Stars', value: projet?.stargazers_count || 0, color: '#4caefe' },
+    { name: 'Forks', value: projet?.forks_count || 0, color: '#3dc3e8' },
+    { name: 'Watchers', value: projet?.watchers_count || 0, color: '#2dd9db' },
+    { name: 'Issues', value: projet?.open_issues_count || 0, color: '#1feeaf' },
+    { name: 'Size (KB)', value: projet?.size || 0, color: '#0ff3a0' }
   ];
 
+  // Scale the radii logarithmically so smaller metrics remain visible while preserving visual distinction
+  const maxVal = Math.max(...rawData.map(d => d.value), 1);
+  const getRadius = (val) => {
+    if (val <= 0) return 25;
+    const ratio = Math.log10(val + 1) / Math.log10(maxVal + 1);
+    return 25 + ratio * 65; // maps values to radius bounds [25, 90]
+  };
+
+  // Center angle calculations for 5 sectors (72 degrees each)
+  const numSectors = rawData.length;
+  const angleSize = 360 / numSectors;
+
   return (
-    <div className="radar-card">
-      <h3 className="radar-title">Repository Metrics</h3>
-      <div className="radar-glow-wrapper" style={{ padding: '20px' }}>
-        <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <XAxis dataKey="name" stroke="var(--text-color)" tick={{ fill: 'var(--text-muted)' }} />
-            <YAxis stroke="var(--text-color)" tick={{ fill: 'var(--text-muted)' }} />
-            <Tooltip 
-              cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-              contentStyle={{ backgroundColor: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: '12px' }}
-              itemStyle={{ color: 'var(--text-color)', fontWeight: 'bold' }}
+    <div className="radar-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <h3 className="radar-title" style={{ fontSize: '1.2rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '0.5rem' }}>
+        Repository Metrics (Variable Pie)
+      </h3>
+      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', margin: '0 0 1rem 0' }}>
+        Proportional Area & Value Comparison
+      </p>
+      
+      <div className="radar-glow-wrapper" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '220px' }}>
+        <ResponsiveContainer width="100%" height={230}>
+          <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+            <Tooltip
+              cursor={false}
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  const data = payload[0].payload;
+                  return (
+                    <div style={{
+                      backgroundColor: 'var(--input-bg)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '0.85rem',
+                      color: 'var(--text-color)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                    }}>
+                      <p style={{ margin: 0, fontWeight: 600 }}>
+                        <span style={{ color: payload[0].color }}>●</span> {payload[0].name}:{' '}
+                        <strong style={{ color: 'var(--text-color)' }}>{payload[0].value.toLocaleString()}</strong>
+                      </p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
             />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Bar>
-          </BarChart>
+            {rawData.map((item, index) => {
+              const startAngle = 90 - index * angleSize;
+              const endAngle = 90 - (index + 1) * angleSize;
+              const radius = getRadius(item.value);
+              
+              // Each sector is rendered as a standalone Pie layer with customized outer radius
+              const sectorData = [{ name: item.name, value: item.value, color: item.color }];
+
+              return (
+                <Pie
+                  key={item.name}
+                  data={sectorData}
+                  dataKey="value"
+                  cx="50%"
+                  cy="50%"
+                  startAngle={startAngle}
+                  endAngle={endAngle}
+                  innerRadius={15}
+                  outerRadius={radius}
+                  stroke="var(--bg-color)"
+                  strokeWidth={2}
+                  labelLine={false}
+                  label={({ cx, cy, midAngle, innerRadius, outerRadius, name }) => {
+                    // Position labels just outside the edge of each sector
+                    const RADIAN = Math.PI / 180;
+                    const radiusOffset = outerRadius + 15;
+                    const x = cx + radiusOffset * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radiusOffset * Math.sin(-midAngle * RADIAN);
+                    
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fill="var(--text-muted)"
+                        textAnchor={x > cx ? 'start' : 'end'}
+                        dominantBaseline="central"
+                        fontSize={10}
+                        fontWeight={600}
+                      >
+                        {name.split(' ')[0]}
+                      </text>
+                    );
+                  }}
+                >
+                  <Cell fill={item.color} />
+                </Pie>
+              );
+            })}
+          </PieChart>
         </ResponsiveContainer>
+      </div>
+
+      <div style={{
+        marginTop: '1rem',
+        paddingTop: '1rem',
+        borderTop: '1px solid var(--border-color)',
+        display: 'flex',
+        justifyContent: 'center',
+        fontSize: '0.85rem'
+      }}>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {rawData.map((item) => (
+            <span key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: item.color, display: 'inline-block' }}></span>
+              {item.name}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
