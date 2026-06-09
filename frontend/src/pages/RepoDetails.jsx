@@ -324,10 +324,6 @@ export default function RepoDetails() {
     );
   }
 
-<<<<<<< Updated upstream
-  // Extraction propre de l'auteur et du nom
-  const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Auteur', projet.name || 'Projet'];
-=======
   const addToDatabase = async (projet) => {
         try {            
           if (projet._id) {
@@ -360,7 +356,6 @@ export default function RepoDetails() {
 
   // Clean extraction of author and name
   const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Author', projet.name || 'Project'];
->>>>>>> Stashed changes
   const starsCount = projet.stargazers_count !== undefined ? projet.stargazers_count : (projet.stars || 12000);
   const forksCount = projet.forks_count !== undefined ? projet.forks_count : (projet.forks || 1500);
 
@@ -370,8 +365,6 @@ export default function RepoDetails() {
       <div className="nav-actions">
         <button className="btn-retour" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Back
-<<<<<<< Updated upstream
-=======
         </button>
         <button 
           className="btn-ajouter" 
@@ -389,7 +382,6 @@ export default function RepoDetails() {
           }}
         >
           <FiBookmark />
->>>>>>> Stashed changes
         </button>
       </div>
 
