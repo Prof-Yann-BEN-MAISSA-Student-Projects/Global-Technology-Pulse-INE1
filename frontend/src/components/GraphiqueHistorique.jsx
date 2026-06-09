@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Line } from 'recharts';
 import '../css/GraphiqueHistorique.css';
 
-export default function GraphiqueHistorique({ donnees, starsCount, forksCount, nomProjet }) {
+export default function GraphiqueHistorique({ donnees, starsCount, forksCount, nomProjet, prediction }) {
   const [ossData, setOssData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -59,25 +59,51 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
     dataToRender = ossData.map(d => ({
       date: d.date,
       val1: d.val1, // Issues
-      val2: d.val2  // PRs
+      val2: d.val2, // PRs
+      predictedStars: null
     }));
     hasOss = true;
   } else if (donnees && donnees.length >= 2) {
     dataToRender = [...donnees].map(d => ({
       date: d.date ? new Date(d.date).toISOString().split('T')[0] : '',
       val1: d.stars || d.etoiles || 0, // Stars
-      val2: d.forks || 0               // Forks
+      val2: d.forks || 0,              // Forks
+      predictedStars: null
     })).sort((a, b) => new Date(a.date) - new Date(b.date));
   }
 
+  // Append prediction point
+  if (prediction && prediction.predictedStars30d && dataToRender.length >= 2) {
+    const latestPoint = dataToRender[dataToRender.length - 1];
+    // Set start of prediction line to match last actual stars
+    latestPoint.predictedStars = latestPoint.val1;
+
+    try {
+      const lastDate = new Date(latestPoint.date);
+      const predDate = new Date(lastDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const predDateStr = predDate.toISOString().split('T')[0];
+
+      dataToRender.push({
+        date: predDateStr,
+        val1: null,
+        val2: null,
+        predictedStars: prediction.predictedStars30d
+      });
+    } catch (e) {
+      console.error("Error setting predicted date:", e);
+    }
+  }
+
   // Calculate dynamic date range text for the footer
-  let dateRangeText = "Période inconnue";
+  let dateRangeText = "Unknown period";
   if (dataToRender.length >= 2) {
     try {
+      // Ignore the final prediction point for the date range footer text
+      const lastActualIndex = prediction && prediction.predictedStars30d ? dataToRender.length - 2 : dataToRender.length - 1;
       const firstDate = new Date(dataToRender[0].date);
-      const lastDate = new Date(dataToRender[dataToRender.length - 1].date);
+      const lastDate = new Date(dataToRender[lastActualIndex].date);
       const options = { month: 'long', year: 'numeric' };
-      dateRangeText = `${firstDate.toLocaleDateString('fr-FR', options)} - ${lastDate.toLocaleDateString('fr-FR', options)}`;
+      dateRangeText = `${firstDate.toLocaleDateString('en-US', options)} - ${lastDate.toLocaleDateString('en-US', options)}`;
     } catch (e) {
       console.error("Error formatting date range", e);
     }
@@ -86,7 +112,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
   if (loading) {
     return (
       <div className="graph-hist" style={{ height: '390px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Chargement de l'historique depuis OSSInsight...</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Loading history from OSSInsight...</p>
       </div>
     );
   }
@@ -94,7 +120,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
   if (dataToRender.length < 2) {
     return (
       <div className="graph-hist" style={{ height: '390px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Données historiques insuffisantes pour tracer une évolution</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Insufficient historical data to plot evolution</p>
       </div>
     );
   }
@@ -105,15 +131,15 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
       <div style={{ width: '100%', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
         <h3 className="graph-title" style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>
           {hasOss ? (
-            <>Évolution Historique : Créateurs Issues vs Créateurs PRs</>
+            <>Historical Evolution: Issue Creators vs PR Creators</>
           ) : (
-            <>Évolution Historique : Étoiles vs Forks</>
+            <>Historical Evolution: Stars vs Forks</>
           )}
         </h3>
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>
           {hasOss 
-            ? "Comparaison mensuelle du nombre de contributeurs d'issues et de pull requests"
-            : "Progression cumulée du nombre d'étoiles et de forks du dépôt"
+            ? "Monthly comparison of the number of issue creators and pull request creators"
+            : "Cumulative progression of the number of stars and forks of the repository"
           }
         </p>
       </div>
@@ -141,7 +167,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
                 if (!value) return '';
                 try {
                   const d = new Date(value);
-                  return d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                  return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
                 } catch {
                   return value;
                 }
@@ -172,15 +198,18 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
                       boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                     }}>
                       <p style={{ margin: '0 0 6px 0', fontWeight: 600 }}>
-                        {new Date(payload[0].payload.date).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                        {new Date(payload[0].payload.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                       </p>
-                      {payload.map((item, idx) => (
-                        <p key={idx} style={{ margin: 0, padding: '2px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: item.color, display: 'inline-block' }}></span>
-                          <span style={{ color: 'var(--text-muted)' }}>{item.name}:</span>
-                          <strong style={{ color: 'var(--text-color)' }}>{item.value.toLocaleString()}</strong>
-                        </p>
-                      ))}
+                      {payload.map((item, idx) => {
+                        if (item.value === null || item.value === undefined) return null;
+                        return (
+                          <p key={idx} style={{ margin: 0, padding: '2px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: item.color, display: 'inline-block' }}></span>
+                            <span style={{ color: 'var(--text-muted)' }}>{item.name}:</span>
+                            <strong style={{ color: 'var(--text-color)' }}>{item.value.toLocaleString()}</strong>
+                          </p>
+                        );
+                      })}
                     </div>
                   );
                 }
@@ -188,7 +217,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
               }}
             />
             <Area
-              name={hasOss ? "Créateurs PRs" : "Forks"}
+              name={hasOss ? "PR Creators" : "Forks"}
               dataKey="val2"
               type="natural"
               fill="var(--chart-2)"
@@ -198,7 +227,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
               stackId="a"
             />
             <Area
-              name={hasOss ? "Créateurs Issues" : "Étoiles"}
+              name={hasOss ? "Issue Creators" : "Stars"}
               dataKey="val1"
               type="natural"
               fill="var(--chart-1)"
@@ -207,17 +236,34 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
               strokeWidth={2}
               stackId="a"
             />
+            <Line
+              name="Predicted trajectory"
+              dataKey="predictedStars"
+              stroke="#ff7300"
+              strokeDasharray="5 5"
+              strokeWidth={2.5}
+              dot={{ r: 4, fill: '#ff7300' }}
+              connectNulls={false}
+            />
             <Legend
               verticalAlign="bottom"
               height={36}
               content={({ payload }) => (
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '0.5rem', fontSize: '0.8rem' }}>
-                  {payload.map((entry, index) => (
-                    <span key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-muted)' }}>
-                      <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: entry.color, display: 'inline-block' }}></span>
-                      {entry.value}
-                    </span>
-                  ))}
+                  {payload.map((entry, index) => {
+                    return (
+                      <span key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-muted)' }}>
+                        <span style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: entry.dataKey === 'predictedStars' ? '0%' : '50%',
+                          backgroundColor: entry.color,
+                          display: 'inline-block'
+                        }}></span>
+                        {entry.value}
+                      </span>
+                    );
+                  })}
                 </div>
               )}
             />

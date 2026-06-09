@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 function DemographicsChart({ data }) {
     // Si la data n'est pas encore là ou si elle est vide
     if (!data || data.length === 0) {
-        return <p style={{ color: '#8892b0' }}>Aucune donnée démographique disponible.</p>;
+        return <p style={{ color: '#8892b0' }}>No demographic data available.</p>;
     }
 
     // On trie pour avoir les plus gros pays en premier, et on ne garde que le Top 5

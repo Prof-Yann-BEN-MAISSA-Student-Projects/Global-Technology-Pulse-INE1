@@ -3,12 +3,14 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Globe from 'react-globe.gl';
 import GraphiqueHistorique from '../components/GraphiqueHistorique';
-import { FiStar, FiGitBranch, FiExternalLink, FiArrowLeft, FiActivity, FiCode } from 'react-icons/fi';
+import { FiStar, FiGitBranch, FiExternalLink, FiArrowLeft, FiActivity, FiCode, FiBookmark } from 'react-icons/fi';
 import { FaGithub } from 'react-icons/fa';
 import RadarSanteProjet from '../components/RadarSanteProjet.jsx';
 import RepoHistogram from '../components/RepoHistogram.jsx';
 import DemographicsContainer from '../components/DemographicsContainer.jsx';
 import ChartRadialLabel from '../components/ChartRadialLabel.jsx';
+import usePrediction from '../hooks/usePrediction';
+import PredictionBadge from '../components/PredictionBadge';
 import '../css/RepoDetails.css';
 
 // Dictionnaire associant les codes ISO 2 des pays à leurs coordonnées centrales (200+ pays)
@@ -175,6 +177,7 @@ export default function RepoDetails() {
   // Initialiser avec les données passées par Link si disponibles, sinon un objet vide
   const [projet, setProjet] = useState(locationState?.projet || null);
   const [loading, setLoading] = useState(!locationState?.projet);
+  const { prediction } = usePrediction(decodedFullName);
 
   // État pour le Globe
   const [coordonnees, setCoordonnees] = useState([]);
@@ -305,7 +308,7 @@ export default function RepoDetails() {
     return (
       <div className="repo-details-page" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <div className="badge-dot" style={{ width: '20px', height: '20px', marginBottom: '1rem' }}></div>
-        <h2>Chargement des analyses du dépôt...</h2>
+        <h2>Loading repository analysis...</h2>
       </div>
     );
   }
@@ -313,16 +316,51 @@ export default function RepoDetails() {
   if (!projet) {
     return (
       <div className="repo-details-page" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <h2>Dépôt introuvable</h2>
+        <h2>Repository not found</h2>
         <button className="btn-retour" onClick={() => navigate('/')}>
-          <FiArrowLeft /> Retour à l'accueil
+          <FiArrowLeft /> Return to Home
         </button>
       </div>
     );
   }
 
+<<<<<<< Updated upstream
   // Extraction propre de l'auteur et du nom
   const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Auteur', projet.name || 'Projet'];
+=======
+  const addToDatabase = async (projet) => {
+        try {            
+          if (projet._id) {
+            alert("This project is already in the database.");
+            return;
+          }
+          await axios.post('http://localhost:2500/api/projects', {
+                avatar_url: projet.avatar_url || (projet.owner && projet.owner.avatar_url),
+                full_name: projet.full_name,
+                description: projet.description,
+                language: projet.language,
+                stargazers_count: projet.stargazers_count,
+                forks_count: projet.forks_count,
+                watchers_count: projet.watchers_count,
+                open_issues_count: projet.open_issues_count,
+                size: projet.size,
+                contributors_url: projet.contributors_url || `https://api.github.com/repos/${projet.full_name}/contributors`
+            });
+          alert("Project successfully added to the database!");
+
+        } catch (error) {
+            console.error("Error adding project to database:", error);
+            if (error.response && error.response.status === 400 && error.response.data.details && error.response.data.details.includes('duplicate')) {
+                alert("This project is already in the database.");
+            } else {
+                alert("Error adding project to the database.");
+            }
+        }
+  };
+
+  // Clean extraction of author and name
+  const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Author', projet.name || 'Project'];
+>>>>>>> Stashed changes
   const starsCount = projet.stargazers_count !== undefined ? projet.stargazers_count : (projet.stars || 12000);
   const forksCount = projet.forks_count !== undefined ? projet.forks_count : (projet.forks || 1500);
 
@@ -332,6 +370,26 @@ export default function RepoDetails() {
       <div className="nav-actions">
         <button className="btn-retour" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Back
+<<<<<<< Updated upstream
+=======
+        </button>
+        <button 
+          className="btn-ajouter" 
+          onClick={() => addToDatabase(projet)}
+          title="Save to Database"
+          style={{
+            padding: 0,
+            width: '42px',
+            height: '42px',
+            borderRadius: '50%',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.2rem'
+          }}
+        >
+          <FiBookmark />
+>>>>>>> Stashed changes
         </button>
       </div>
 
@@ -346,24 +404,78 @@ export default function RepoDetails() {
             </div>
           )}
           <div className="repo-info">
-            <h1>
+            <h1 style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <span>{authorName}</span> / <strong style={{ color: '#3b82f6' }}>{repoName}</strong>
+              {prediction && (
+                <PredictionBadge trendClass={prediction.trendClass} momentumScore={prediction.momentumScore} />
+              )}
             </h1>
             <p className="description">
-              {projet.description || "Ce dépôt open-source rassemble des outils avancés d'analyse et d'intégration continue."}
+              {projet.description || "This open-source repository aggregates advanced analytics and continuous integration tools."}
             </p>
           </div>
         </div>
 
-        <div className="overview-banner-right">
+        <div className="overview-banner-right" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', alignItems: 'flex-end', minWidth: '240px' }}>
           <a
             href={`https://github.com/${projet.full_name}`}
             target="_blank"
             rel="noopener noreferrer"
             className="github-external-btn"
+            style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: 0 }}
           >
-            <FaGithub /> Voir sur GitHub <FiExternalLink />
+            <FaGithub /> View on GitHub <FiExternalLink />
           </a>
+
+          {prediction && prediction.trendClass !== 'INSUFFICIENT_DATA' && (
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '12px',
+              padding: '1rem',
+              width: '100%',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }}>
+              <h4 style={{ margin: '0 0 0.6rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Popularity Forecast
+              </h4>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Momentum:</span>
+                  <strong style={{ color: '#3b82f6' }}>{Math.round(prediction.momentumScore * 100)}%</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Forecast (30d):</span>
+                  <strong style={{ color: '#f59e0b' }}>{prediction.predictedStars30d?.toLocaleString()} ★</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Expected Growth:</span>
+                  <strong style={{ color: '#10b981' }}>
+                    +{Math.max(0, prediction.predictedStars30d - prediction.currentStars).toLocaleString()} ★
+                  </strong>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {prediction && prediction.trendClass === 'INSUFFICIENT_DATA' && (
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '12px',
+              padding: '1rem',
+              width: '100%',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }}>
+              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Popularity Forecast
+              </h4>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                New repository. Initial time-series snapshots are gathering...
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -375,7 +487,15 @@ export default function RepoDetails() {
           </div>
           <div className="stat-details">
             <span className="value">{starsCount > 999 ? (starsCount / 1000).toFixed(1) + 'k' : starsCount}</span>
-            <span className="label">Étoiles (Stars)</span>
+            <span className="label">Stars</span>
+            {prediction && prediction.predictedStars30d && (
+              <span 
+                style={{ fontSize: '0.75rem', color: '#f97316', marginTop: '4px', fontWeight: 600 }}
+                title="Based on heuristic trend analysis"
+              >
+                30d Pred: {prediction.predictedStars30d.toLocaleString()} ★
+              </span>
+            )}
           </div>
         </div>
 
@@ -385,7 +505,7 @@ export default function RepoDetails() {
           </div>
           <div className="stat-details">
             <span className="value">{forksCount > 999 ? (forksCount / 1000).toFixed(1) + 'k' : forksCount}</span>
-            <span className="label">Forks du Dépôt</span>
+            <span className="label">Repository Forks</span>
           </div>
         </div>
 
@@ -395,7 +515,7 @@ export default function RepoDetails() {
           </div>
           <div className="stat-details">
             <span className="value">{projet.language || 'TypeScript'}</span>
-            <span className="label">Langage Principal</span>
+            <span className="label">Primary Language</span>
           </div>
         </div>
 
@@ -404,8 +524,8 @@ export default function RepoDetails() {
             <FiActivity />
           </div>
           <div className="stat-details">
-            <span className="value">Optimal</span>
-            <span className="label">Statut d'Activité</span>
+            <span className="value">Active</span>
+            <span className="label">Activity Status</span>
           </div>
         </div>
       </div>
@@ -419,13 +539,14 @@ export default function RepoDetails() {
               starsCount={starsCount}
               forksCount={forksCount}
               nomProjet={projet.full_name}
+              prediction={prediction}
             />
           </div>
 
           <div className="globe-container">
-            <h3>Localisation des Contributeurs</h3>
+            <h3>Contributor Locations</h3>
             {globeLoading ? (
-              <p style={{ color: '#3b82f6', marginTop: '2rem' }}>Analyse satellitaire en cours...</p>
+              <p style={{ color: '#3b82f6', marginTop: '2rem' }}>Satellite analysis in progress...</p>
             ) : (
               <Globe
                 width={380}

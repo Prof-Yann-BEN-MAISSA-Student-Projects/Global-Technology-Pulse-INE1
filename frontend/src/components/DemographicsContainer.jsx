@@ -12,18 +12,18 @@ const DemographicsContainer = ({ nomProjet, onDataLoaded }) => {
     let isMounted = true;
 
     const fetchDemographics = async () => {
-      console.log(`[Demographics] Lancement de l'analyse pour ${nomProjet}...`);
+      console.log(`[Demographics] Starting analysis for ${nomProjet}...`);
       try {
-        // Appel de la vraie API (GET synchrone lourd au lieu du setInterval)
+        // Call the real API
         const response = await axios.get(`http://localhost:2500/api/projects/${encodeURIComponent(nomProjet)}/locations`);
 
         if (isMounted) {
           setStatus('ready');
 
-          // On aggrége les localisations par pays pour le graphique
+          // Aggregate locations by country
           const countryCounts = {};
           response.data.forEach((item, idx) => {
-            const countryName = item.country || `Localisation ${idx + 1}`;
+            const countryName = item.country || `Location ${idx + 1}`;
             countryCounts[countryName] = (countryCounts[countryName] || 0) + 1;
           });
 
@@ -36,9 +36,8 @@ const DemographicsContainer = ({ nomProjet, onDataLoaded }) => {
           if (onDataLoaded) onDataLoaded(response.data);
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération des localisations :", error);
+        console.error("Error retrieving locations:", error);
         if (isMounted) {
-          // On peut gérer un état 'error' ou repasser en 'ready' avec liste vide
           setStatus('ready');
           setData({ projet: nomProjet, stats: [] });
         }

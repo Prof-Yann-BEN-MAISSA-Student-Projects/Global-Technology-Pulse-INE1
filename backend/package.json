@@ -15,10 +15,13 @@
   "dependencies": {
     "axios": "^1.15.0",
     "cors": "^2.8.6",
+    "date-fns": "^4.4.0",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "mathjs": "^15.2.0",
     "mongoose": "^9.4.1",
-    "node-cron": "^4.2.1"
+    "node-cron": "^4.2.1",
+    "simple-statistics": "^7.9.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

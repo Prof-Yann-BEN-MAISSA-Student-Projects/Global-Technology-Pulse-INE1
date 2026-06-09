@@ -82,6 +82,13 @@
     display: flex;
     gap: 1.5rem;
     align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.repo-info {
+    flex: 1;
+    min-width: 0;
 }
 
 .repo-avatar {
@@ -280,12 +287,14 @@
 
     .overview-banner {
         padding: 1.5rem;
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 1.5rem;
     }
 
     .overview-banner-right {
-        align-items: stretch;
+        align-items: flex-end;
     }
 
     .github-external-btn {

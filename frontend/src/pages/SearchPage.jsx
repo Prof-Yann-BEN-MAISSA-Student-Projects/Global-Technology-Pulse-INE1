@@ -69,7 +69,7 @@ export default function SearchPage() {
     <div className="trending-section repo-details-page" style={{ minHeight: '80vh', padding: '6rem 4rem 4rem 4rem' }}>
       <div className="nav-actions" style={{ marginBottom: '2rem' }}>
         <button className="btn-retour" onClick={() => navigate(-1)}>
-          <FiArrowLeft /> Retourner
+          <FiArrowLeft /> Back
         </button>
       </div>
 

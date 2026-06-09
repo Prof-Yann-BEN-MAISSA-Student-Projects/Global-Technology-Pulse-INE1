@@ -18,43 +18,43 @@ export default function UseCasesPage() {
   // Scénarios pré-définis (Professionnels)
   const scenarios = [
     {
-      title: "Développeur Mobile au Maroc",
-      description: "Recherche les frameworks mobiles les plus populaires au Maroc pour le marché local.",
+      title: "Mobile Developer in Morocco",
+      description: "Search for the most popular mobile frameworks in Morocco for the local market.",
       domain: "Mobile",
       country: "Maroc",
       icon: <FiMapPin style={{ color: '#10b981' }} />
     },
     {
-      title: "Architecte SGBD en France",
-      description: "Explore les bases de données les plus adoptées en France pour orienter ses choix techniques.",
+      title: "Database Architect in France",
+      description: "Explore the most widely adopted database systems in France to guide tech stack choices.",
       domain: "Database",
       country: "France",
       icon: <FiBriefcase style={{ color: '#3b82f6' }} />
     },
     {
-      title: "Spécialiste Intelligence Artificielle",
-      description: "Veille technologique sur les modèles LLM et algorithmes d'IA les plus populaires au monde.",
+      title: "Artificial Intelligence Specialist",
+      description: "Monitor state-of-the-art LLMs and popular AI algorithms globally.",
       domain: "AI",
       country: "Global",
       icon: <FiCpu style={{ color: '#a855f7' }} />
     },
     {
-      title: "Ingénieur Web Fullstack",
-      description: "Analyse des outils Web (Frontend & Backend) de référence à l'échelle mondiale.",
+      title: "Fullstack Web Engineer",
+      description: "Analyze reference Web development tools (Frontend & Backend) globally.",
       domain: "Web",
       country: "Global",
       icon: <FiBriefcase style={{ color: '#f59e0b' }} />
     },
     {
-      title: "Data Scientist (Analyse & Big Data)",
-      description: "Recherche d'outils et librairies essentiels pour le traitement de la donnée.",
+      title: "Data Scientist (Analytics & Big Data)",
+      description: "Discover essential tools and libraries for heavy data processing and workflows.",
       domain: "Data Science",
       country: "Global",
       icon: <FiCpu style={{ color: '#ec4899' }} />
     },
     {
-      title: "Expert DevOps & Cloud",
-      description: "Outils de conteneurisation et déploiement continu les plus prisés globalement.",
+      title: "DevOps & Cloud Expert",
+      description: "Examine containerization and continuous deployment tools favored worldwide.",
       domain: "DevOps",
       country: "Global",
       icon: <FiMapPin style={{ color: '#06b6d4' }} />
@@ -72,7 +72,7 @@ export default function UseCasesPage() {
       const response = await axios.get(`http://localhost:2500/api/projects/usecases/filter?${params.toString()}`);
       
       const formattedData = response.data.map(project => {
-        const [authorName, repoName] = project.full_name ? project.full_name.split('/') : ['Auteur', 'Projet'];
+        const [authorName, repoName] = project.full_name ? project.full_name.split('/') : ['Author', 'Project'];
         return {
           id: project.full_name,
           author: authorName,
@@ -87,8 +87,8 @@ export default function UseCasesPage() {
 
       setResults(formattedData);
     } catch (err) {
-      console.error("Erreur lors du filtrage :", err);
-      setError("Impossible de charger les résultats.");
+      console.error("Error filtering projects:", err);
+      setError("Unable to load results.");
     } finally {
       setLoading(false);
     }
@@ -110,13 +110,13 @@ export default function UseCasesPage() {
       
       <div className="nav-actions" style={{ marginBottom: '2rem', width: '100%' }}>
         <button className="btn-retour" onClick={() => navigate(-1)}>
-          <FiArrowLeft /> Retourner
+          <FiArrowLeft /> Back
         </button>
       </div>
 
       <div className="section-header">
-        <h2>Cas d'Usage (Use Cases)</h2>
-        <p>Explorez les technologies selon des profils professionnels et zones géographiques.</p>
+        <h2>Use Cases</h2>
+        <p>Explore technologies based on professional profiles and geographic regions.</p>
       </div>
 
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px', flexWrap: 'wrap' }}>
@@ -140,18 +140,18 @@ export default function UseCasesPage() {
 
       <div className="filter-bar" style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '40px', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '15px', flexWrap: 'wrap' }}>
         <FiFilter style={{ color: '#0ff', fontSize: '1.5rem' }} />
-        <h3 style={{ margin: 0, color: '#fff' }}>Filtres Personnalisés :</h3>
+        <h3 style={{ margin: 0, color: '#fff' }}>Custom Filters:</h3>
         
         <select 
           style={{ background: 'rgba(0,0,0,0.5)', color: '#fff', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
         >
-          <option value="">Tous les Domaines</option>
-          <option value="Mobile">Développement Mobile</option>
-          <option value="Web">Développement Web</option>
-          <option value="Database">Bases de Données (SGBD)</option>
-          <option value="AI">Intelligence Artificielle (IA/LLM)</option>
+          <option value="">All Domains</option>
+          <option value="Mobile">Mobile Development</option>
+          <option value="Web">Web Development</option>
+          <option value="Database">Databases (DBMS)</option>
+          <option value="AI">Artificial Intelligence (AI/LLM)</option>
           <option value="Data Science">Data Science & Analytics</option>
           <option value="DevOps">DevOps & Cloud</option>
         </select>
@@ -161,16 +161,16 @@ export default function UseCasesPage() {
           value={country}
           onChange={(e) => setCountry(e.target.value)}
         >
-          <option value="">Tous les Pays</option>
-          <option value="Maroc">Maroc</option>
+          <option value="">All Countries</option>
+          <option value="Maroc">Morocco</option>
           <option value="France">France</option>
-          <option value="Global">Global (Monde)</option>
+          <option value="Global">Global (World)</option>
         </select>
       </div>
 
-      {/* Résultats */}
+      {/* Results */}
       {loading ? (
-        <p style={{ color: '#0ff', fontSize: '1.2rem' }}>Recherche spatiale en cours...</p>
+        <p style={{ color: '#0ff', fontSize: '1.2rem' }}>Searching recommendations...</p>
       ) : error ? (
         <p style={{ color: 'red' }}>{error}</p>
       ) : results.length > 0 ? (
@@ -181,10 +181,10 @@ export default function UseCasesPage() {
         </div>
       ) : (domain || country) ? (
         <p style={{ color: '#8892b0', fontSize: '1.1rem' }}>
-          Aucun projet ne correspond exactement à ces critères (Domaine: {domain || "Tout"}, Pays: {country || "Tout"}).
+          No projects match these criteria (Domain: {domain || "All"}, Country: {country || "All"}).
         </p>
       ) : (
-        <p style={{ color: '#8892b0', fontSize: '1.1rem' }}>Sélectionnez un scénario ou des filtres pour afficher les recommandations.</p>
+        <p style={{ color: '#8892b0', fontSize: '1.1rem' }}>Select a scenario or custom filters to display recommendations.</p>
       )}
 
     </div>

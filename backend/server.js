@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors'); 
 const connectDB = require('./config/db'); 
 const { demarrerWorker, initScheduler } = require('./services/worker'); 
+const { initPredictionJobs } = require('./jobs/dailyCron');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/api/projects', projectRoutes);
 
 demarrerWorker();
 initScheduler();
+initPredictionJobs();
 
 app.listen(PORT, () => {
     console.log(`Le serveur tourne sur le port ${PORT}`);
