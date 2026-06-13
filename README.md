@@ -608,11 +608,7 @@ Please follow the [Conventional Commits](https://www.conventionalcommits.org/) s
 
 ---
 
-## 📄 License
 
-Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for more information.
-
----
 
 ## 📧 Contact
 
