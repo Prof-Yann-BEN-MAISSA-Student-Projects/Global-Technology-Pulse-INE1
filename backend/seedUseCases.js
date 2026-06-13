@@ -74,7 +74,7 @@ const seedDB = async () => {
     try {
       let existing = await Project.findOne({ full_name: projData.full_name });
       if (existing) {
-        // Mettre à jour les tags si le projet existe déjà
+        
         existing.domainTags = projData.domainTags;
         existing.countryTags = projData.countryTags;
         await existing.save();

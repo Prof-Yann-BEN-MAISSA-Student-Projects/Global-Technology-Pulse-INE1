@@ -17,11 +17,11 @@ function NavBar({ isDarkMode, toggleTheme }) {
 
             setLoading(true);
             try {
-                // If it contains a slash, assume it's a specific "owner/repo" and go directly
+                
                 if (term.includes('/')) {
                     navigate(`/repo/${encodeURIComponent(term)}`);
                 } else {
-                    // Navigate to the new search results page
+                    
                     navigate(`/search/${encodeURIComponent(term)}`);
                 }
                 setSearchTerm('');

@@ -3,7 +3,7 @@ import { RadialBarChart, RadialBar, LabelList, Tooltip, ResponsiveContainer } fr
 import '../css/RadarSante.css';
 
 export default function ChartRadialLabel({ projet }) {
-  // Map project data to the radial chart structure using same keys
+  
   const chartData = [
     { browser: 'stars', visitors: projet?.stargazers_count || 0, fill: 'var(--color-chrome)' },
     { browser: 'forks', visitors: projet?.forks_count || 0, fill: 'var(--color-safari)' },

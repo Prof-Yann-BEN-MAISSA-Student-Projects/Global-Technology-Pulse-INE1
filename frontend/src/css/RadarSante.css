@@ -1,4 +1,4 @@
-/* ── RadarSanteProjet ── */
+
 
 .radar-card {
     background: var(--input-bg);
@@ -15,7 +15,7 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-/* Glassmorphism override for dark mode only */
+
 .dark .radar-card {
     background: rgba(19, 19, 40, 0.45);
     backdrop-filter: blur(16px);
@@ -41,7 +41,7 @@
     position: relative;
 }
 
-/* Neon pulse — dark mode only */
+
 .dark .radar-glow-wrapper::before {
     content: '';
     position: absolute;

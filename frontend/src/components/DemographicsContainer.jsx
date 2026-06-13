@@ -14,13 +14,13 @@ const DemographicsContainer = ({ nomProjet, onDataLoaded }) => {
     const fetchDemographics = async () => {
       console.log(`[Demographics] Starting analysis for ${nomProjet}...`);
       try {
-        // Call the real API
+        
         const response = await axios.get(`http://localhost:2500/api/projects/${encodeURIComponent(nomProjet)}/locations`);
 
         if (isMounted) {
           setStatus('ready');
 
-          // Aggregate locations by country
+          
           const countryCounts = {};
           response.data.forEach((item, idx) => {
             const countryName = item.country || `Location ${idx + 1}`;
@@ -57,7 +57,7 @@ const DemographicsContainer = ({ nomProjet, onDataLoaded }) => {
     <div className="demographics-container">
       {status === 'processing' ? (
         <div className="radar-wrapper fade-in">
-          {/* Animation CSS pure du radar */}
+          {}
           <div className="radar">
             <div className="radar-v-line"></div>
             <div className="radar-circle-inner"></div>

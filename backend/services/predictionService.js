@@ -6,7 +6,7 @@ const RepositorySnapshot = require('../models/RepositorySnapshot');
 const Prediction = require('../models/Prediction');
 const { fetchGithubData } = require('./githubService');
 
-// Helper to fetch commits in last 30 days
+
 async function fetchCommitsCount(repoId) {
   const thirtyDaysAgo = subDays(new Date(), 30);
   try {
@@ -27,11 +27,11 @@ async function fetchCommitsCount(repoId) {
     return response.data.length;
   } catch (err) {
     console.error(`Error fetching commits count for ${repoId}:`, err.message);
-    return Math.round(15 + Math.random() * 20); // Fallback realistic number
+    return Math.round(15 + Math.random() * 20); 
   }
 }
 
-// Helper to fetch issues opened in last 30 days
+
 async function fetchIssuesOpenedCount(repoId) {
   const thirtyDaysAgo = subDays(new Date(), 30);
   const queryDate = thirtyDaysAgo.toISOString().split('T')[0];
@@ -46,11 +46,11 @@ async function fetchIssuesOpenedCount(repoId) {
     return response.data.total_count || 0;
   } catch (err) {
     console.error(`Error fetching issues count for ${repoId}:`, err.message);
-    return Math.round(5 + Math.random() * 8); // Fallback realistic number
+    return Math.round(5 + Math.random() * 8); 
   }
 }
 
-// Backfills snapshots using Project.history if snapshots are missing
+
 async function backfillSnapshots(project) {
   const repoId = project.full_name;
   console.log(`[Prediction] Backfilling snapshots for ${repoId} using project history...`);
@@ -74,7 +74,7 @@ async function backfillSnapshots(project) {
       }
       stars = closest.stars || stars;
     } else {
-      // Simulate historical star growth curve
+      
       stars = Math.round((project.stargazers_count || 1000) * (1 - (i * 0.0015)));
     }
     
@@ -97,7 +97,7 @@ async function backfillSnapshots(project) {
   }
 }
 
-// Function 1: collectDailySnapshots()
+
 async function collectDailySnapshots() {
   console.log("📡 [Prediction] Starting daily snapshot collection...");
   try {
@@ -121,7 +121,7 @@ async function collectDailySnapshots() {
           date: new Date()
         });
       }
-      // Rate limit protection
+      
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
     console.log("✅ [Prediction] Snapshot collection finished.");
@@ -130,18 +130,18 @@ async function collectDailySnapshots() {
   }
 }
 
-// Function 2: computePredictions()
+
 async function computePredictions() {
   console.log("⚙️ [Prediction] Commencing predictions calculation...");
   try {
     const projects = await Project.find({});
     const allRawVelocities = [];
 
-    // Step 1: Calculate raw velocities
+    
     for (const project of projects) {
       let snapshots = await RepositorySnapshot.find({ repoId: project.full_name }).sort({ date: 1 });
       
-      // If no snapshots, backfill them first to allow instant previewing
+      
       if (snapshots.length < 3) {
         await backfillSnapshots(project);
         snapshots = await RepositorySnapshot.find({ repoId: project.full_name }).sort({ date: 1 });
@@ -155,7 +155,7 @@ async function computePredictions() {
       const latest = snapshots[snapshots.length - 1];
       const targetDate = subDays(latest.date, 7);
       
-      // Find snapshot closest to 7 days ago
+      
       let snap7 = snapshots[0];
       let minDiff = Infinity;
       for (const snap of snapshots) {
@@ -192,7 +192,7 @@ async function computePredictions() {
       return;
     }
 
-    // Step 2: Global min/max/average velocities
+    
     const minStars = Math.min(...validRepos.map(r => r.V_stars));
     const maxStars = Math.max(...validRepos.map(r => r.V_stars));
     const minForks = Math.min(...validRepos.map(r => r.V_forks));
@@ -206,21 +206,21 @@ async function computePredictions() {
 
     const normalize = (val, min, max) => (max === min ? 0 : (val - min) / (max - min));
 
-    // Step 3: Compute momentum, smooth stars, run regression, and classify
+    
     for (const repo of validRepos) {
       const { V_stars, V_forks, V_commits, V_issues, snapshots, latest } = repo;
 
-      // Min-Max Normalization
+      
       const V_stars_norm = normalize(V_stars, minStars, maxStars);
       const V_forks_norm = normalize(V_forks, minForks, maxForks);
       const V_commits_norm = normalize(V_commits, minCommits, maxCommits);
       const V_issues_norm = normalize(V_issues, minIssues, maxIssues);
 
-      // Momentum Score M(R)
+      
       let momentumScore = 0.40 * V_stars_norm + 0.25 * V_forks_norm + 0.25 * V_commits_norm + 0.10 * V_issues_norm;
       momentumScore = Math.max(0, Math.min(1, momentumScore));
 
-      // Star history exponential smoothing
+      
       const t0 = snapshots[0].date;
       const smoothedSeries = [];
       let prevSmoothed = snapshots[0].stars;
@@ -234,15 +234,15 @@ async function computePredictions() {
         prevSmoothed = S_smoothed;
       }
 
-      // Linear regression
+      
       const regression = linearRegression(smoothedSeries);
-      const alpha = regression.m; // slope
-      const beta = regression.b;  // intercept
+      const alpha = regression.m; 
+      const beta = regression.b;  
 
       const t_last = differenceInDays(latest.date, t0);
       let predictedStars = alpha * (t_last + 30) + beta;
 
-      // Edge case capping
+      
       const currentStars = latest.stars;
       if (predictedStars < currentStars) {
         predictedStars = alpha < 0 ? currentStars : Math.min(predictedStars, currentStars * 1.5);
@@ -251,7 +251,7 @@ async function computePredictions() {
       }
       predictedStars = Math.round(predictedStars);
 
-      // Classification
+      
       let trendClass = 'STABLE';
       if (momentumScore > 0.70 && alpha > 0 && V_stars > globalAvgStars) {
         trendClass = 'RISING_STAR';
@@ -259,7 +259,7 @@ async function computePredictions() {
         trendClass = 'DECLINING';
       }
 
-      // Save prediction
+      
       await Prediction.findOneAndUpdate(
         { repoId: repo.repoId },
         {
@@ -287,7 +287,7 @@ async function computePredictions() {
       );
     }
 
-    // Set insufficient status for invalid repos
+    
     const insufficientRepos = allRawVelocities.filter(r => r.insufficient);
     for (const repo of insufficientRepos) {
       await Prediction.findOneAndUpdate(
@@ -308,7 +308,7 @@ async function computePredictions() {
   }
 }
 
-// Function 3: getPrediction(repoId)
+
 async function getPrediction(repoId) {
   let prediction = await Prediction.findOne({ repoId });
   if (!prediction) {
@@ -323,7 +323,7 @@ async function getPrediction(repoId) {
   return prediction;
 }
 
-// Function 4: getTrendingRepos(category, limit, sortBy)
+
 async function getTrendingRepos(category, limit = 10, sortBy = 'momentum') {
   let query = { trendClass: 'RISING_STAR' };
   
@@ -350,19 +350,19 @@ async function getTrendingRepos(category, limit = 10, sortBy = 'momentum') {
 
   let predictions = await Prediction.find(query);
 
-  // Fallback 1: if no RISING_STARs, look for STABLE as well
+  
   if (predictions.length === 0) {
     query.trendClass = { $in: ['RISING_STAR', 'STABLE'] };
     predictions = await Prediction.find(query);
   }
   
-  // Fallback 2: if still empty, fetch any predictions for this language/category query
+  
   if (predictions.length === 0) {
     delete query.trendClass;
     predictions = await Prediction.find(query);
   }
 
-  // Sort
+  
   if (sortBy === 'growth') {
     predictions.sort((a, b) => {
       const growthA = (a.predictedStars30d || 0) - (a.currentStars || 0);
@@ -373,15 +373,15 @@ async function getTrendingRepos(category, limit = 10, sortBy = 'momentum') {
     predictions.sort((a, b) => (b.momentumScore || 0) - (a.momentumScore || 0));
   }
 
-  // Limit
+  
   predictions = predictions.slice(0, limit);
 
-  // Fetch corresponding Projects to enrich the prediction results
+  
   const repoIds = predictions.map(p => p.repoId);
   const projects = await Project.find({ full_name: { $in: repoIds } });
   const projectMap = new Map(projects.map(proj => [proj.full_name, proj]));
 
-  // Combine them
+  
   return predictions.map(p => {
     const proj = projectMap.get(p.repoId);
     return {

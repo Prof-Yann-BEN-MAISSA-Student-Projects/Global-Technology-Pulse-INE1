@@ -52,7 +52,7 @@ export default function TrendingPage() {
         setError(err.message);
       } finally {
         setIsLoading(false);
-        // Scroll back to the top of the page when navigating between pages
+        
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     };

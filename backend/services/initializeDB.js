@@ -1,4 +1,4 @@
-// 1. Les imports
+
 const axios = require('axios');
 const { fetchGithubData } = require('./githubService.js'); 
 const Project = require('../models/Project.js');
@@ -34,7 +34,7 @@ async function initialiserBaseDeDonnees() {
             console.error("⚠️ Impossible de contacter OSSInsight API, utilisation de la liste par défaut :", err.message);
         }
         
-        // Supprimer les doublons
+        
         const uniqueProjects = [...new Set(reposToFetch)];
         console.log(`📊 Nombre total de projets uniques à traiter : ${uniqueProjects.length}`);
         console.log("⏳ Début de la récupération des données GitHub...");
@@ -44,7 +44,7 @@ async function initialiserBaseDeDonnees() {
             console.log(`[${i + 1}/${uniqueProjects.length}] Traitement de ${nomDuProjet}...`);
 
             try {
-                // Éviter de surcharger l'API GitHub et prévenir le rate limiting
+                
                 await new Promise(resolve => setTimeout(resolve, 500));
                 
                 const data = await fetchGithubData(nomDuProjet);

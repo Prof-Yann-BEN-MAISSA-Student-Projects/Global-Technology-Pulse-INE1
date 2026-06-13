@@ -20,7 +20,7 @@ export default function CollectionPage() {
         setIsLoading(true);
         setError(null);
         
-        // Search API with the collection name as keyword
+        
         const response = await fetch(`http://localhost:2500/api/projects/recherche/${encodeURIComponent(collectionName)}`);
         
         if (!response.ok) {

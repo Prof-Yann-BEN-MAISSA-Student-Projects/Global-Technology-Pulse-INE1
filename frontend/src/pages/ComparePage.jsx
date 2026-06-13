@@ -10,29 +10,29 @@ function normaliser(valeur, max) {
   return Math.min(100, Math.round((Math.log(valeur + 1) / Math.log(max + 1)) * 100));
 }
 
-// Helper to derive extra metrics deterministically
+
 function getRepoExtendedStats(repo) {
     if (!repo) return null;
     const name = repo.full_name ? repo.full_name.toLowerCase() : repo.name ? repo.name.toLowerCase() : '';
 
-    // Default dynamic mock data based on stars/forks
+    
     let commits = Math.round((repo.forks_count || 100) * 1.5 + ((repo.stargazers_count || 500) % 7) * 300) + 800;
     let contributors = Math.round((repo.forks_count || 100) * 0.08 + ((repo.stargazers_count || 500) % 13) * 40) + 150;
-    let activity = 45 + ((repo.stargazers_count || 500) % 45); // score out of 100
+    let activity = 45 + ((repo.stargazers_count || 500) % 45); 
 
-    // Override with real known values for React
+    
     if (name.includes('react')) {
         commits = 22800;
         contributors = 1600;
         activity = 88;
     }
-    // Override with real known values for Linux
+    
     if (name.includes('linux')) {
         commits = 1150000;
         contributors = 5000;
         activity = 95;
     }
-    // Override with real known values for Vue
+    
     if (name.includes('vue')) {
         commits = 33000;
         contributors = 450;
@@ -96,7 +96,7 @@ export default function ComparePage() {
         return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : n;
     }
 
-    // Build comparison rows when both repos are selected
+    
     const metrics = repoLeft && repoRight ? [
         { label: 'Stars', icon: <Star size={18} />, left: repoLeft.stargazers_count, right: repoRight.stargazers_count },
         { label: 'Forks', icon: <GitFork size={18} />, left: repoLeft.forks_count, right: repoRight.forks_count },
@@ -105,7 +105,7 @@ export default function ComparePage() {
         { label: 'Language', icon: <Code size={18} />, left: repoLeft.language || '—', right: repoRight.language || '—', isText: true },
     ] : [];
 
-    // Extended Stats for Charts
+    
     const leftStats = getRepoExtendedStats(repoLeft);
     const rightStats = getRepoExtendedStats(repoRight);
 
@@ -117,7 +117,7 @@ export default function ComparePage() {
         { axis: 'Repo Size', repo1: normaliser(repoLeft.size, 4000000), repo2: normaliser(repoRight.size, 4000000) },
     ] : [];
 
-    // Max value calculation for Bar Chart Y-Scale
+    
     const barMetrics = ['Stars', 'Forks', 'Contributors', 'Commits'];
     const maxVal = leftStats && rightStats ? Math.max(
         leftStats.stars, rightStats.stars,
@@ -126,23 +126,23 @@ export default function ComparePage() {
         leftStats.commits, rightStats.commits
     ) : 100;
 
-    // Adjust maxVal to have nice division intervals
+    
     const roundedMaxVal = Math.max(100, Math.ceil(maxVal / 100000) * 100000);
     const barYTicks = [0, roundedMaxVal * 0.25, roundedMaxVal * 0.5, roundedMaxVal * 0.75, roundedMaxVal];
 
     return (
         <div className="compare-page">
 
-            {/* Header */}
+            {}
             <h1 className="compare-title">
                 <ArrowLeftRight size={28} className="title-icon" />
                 Repository Comparison
             </h1>
             <p className="compare-subtitle">Search and compare two repositories side by side</p>
 
-            {/* Two search panels */}
+            {}
             <div className="compare-panels">
-                {/* Left panel */}
+                {}
                 <div className="compare-panel">
                     <div className="compare-search">
                         <Search size={16} />
@@ -170,7 +170,7 @@ export default function ComparePage() {
                     )}
                 </div>
 
-                {/* Right panel */}
+                {}
                 <div className="compare-panel">
                     <div className="compare-search">
                         <Search size={16} />
@@ -199,13 +199,13 @@ export default function ComparePage() {
                 </div>
             </div>
 
-            {/* Action Buttons underneath panels */}
+            {}
             <div className="compare-actions">
                 <button className="btn-compare" onClick={handleCompare}>Compare Repositories</button>
                 <button className="btn-secondary" onClick={clearCompare}>✕ Clear</button>
             </div>
 
-            {/* Comparison Metrics Grid and Charts */}
+            {}
             {metrics.length > 0 && (
                 <>
                     <div className="metrics-container fade-in">
@@ -213,7 +213,7 @@ export default function ComparePage() {
 
                         <div className="compare-table">
                             {metrics.map(m => {
-                                // Determine winner logic (for issues, lower is better)
+                                
                                 let leftWins = false;
                                 let rightWins = false;
 
@@ -247,14 +247,14 @@ export default function ComparePage() {
                         </div>
                     </div>
 
-                    {/* Charts Comparison Grid */}
+                    {}
                     <div className="compare-charts-grid fade-in">
-                        {/* Metrics Bar Chart */}
+                        {}
                         <div className="compare-chart-box">
                             <h3 className="chart-box-title">Metrics Comparison</h3>
                             <div className="chart-wrapper">
                                 <svg viewBox="0 0 500 300" className="chart-svg">
-                                    {/* Grid dashed lines */}
+                                    {}
                                     {barYTicks.map(val => {
                                         const y = 260 - (val / roundedMaxVal) * 240;
                                         return (
@@ -265,7 +265,7 @@ export default function ComparePage() {
                                         );
                                     })}
 
-                                    {/* Bars */}
+                                    {}
                                     {barMetrics.map((lbl, idx) => {
                                         const center = 65 + idx * 103.75 + 51.875;
                                         const leftVal = idx === 0 ? leftStats.stars : idx === 1 ? leftStats.forks : idx === 2 ? leftStats.contributors : leftStats.commits;
@@ -279,21 +279,21 @@ export default function ComparePage() {
 
                                         return (
                                             <g key={lbl}>
-                                                {/* Hover Highlight */}
+                                                {}
                                                 {isHovered && (
                                                     <rect x={center - 45} y={15} width={90} height={250} fill="rgba(255, 255, 255, 0.04)" rx={8} />
                                                 )}
 
-                                                {/* Left Bar (blue) */}
+                                                {}
                                                 <rect x={center - 24} y={yLeft} width={20} height={hLeft} fill="#3b82f6" rx={3} />
 
-                                                {/* Right Bar (purple) */}
+                                                {}
                                                 <rect x={center + 4} y={yRight} width={20} height={hRight} fill="#a855f7" rx={3} />
 
-                                                {/* Label */}
+                                                {}
                                                 <text x={center} y="280" fill="var(--text-muted)" fontSize="11" textAnchor="middle" fontWeight="500">{lbl}</text>
 
-                                                {/* Invisible hit area */}
+                                                {}
                                                 <rect
                                                     x={center - 45}
                                                     y={15}
@@ -309,7 +309,7 @@ export default function ComparePage() {
                                     })}
                                 </svg>
 
-                                {/* Interactive Tooltip */}
+                                {}
                                 {hoveredBarIndex !== null && (
                                     <div className="chart-tooltip">
                                         <div className="tooltip-title">{barMetrics[hoveredBarIndex]}</div>
@@ -329,7 +329,7 @@ export default function ComparePage() {
                                 )}
                             </div>
 
-                            {/* Legend */}
+                            {}
                             <div className="chart-legend">
                                 <div className="legend-item">
                                     <span className="legend-color-box bg-blue"></span>
@@ -342,7 +342,7 @@ export default function ComparePage() {
                             </div>
                         </div>
 
-                        {/* Radar Chart */}
+                        {}
                         <div className="compare-chart-box">
                             <h3 className="chart-box-title">Overall Performance</h3>
                             <div className="chart-wrapper radar-glow-wrapper" style={{ padding: '20px' }}>
@@ -374,7 +374,7 @@ export default function ComparePage() {
                                 </ResponsiveContainer>
                             </div>
 
-                            {/* Legend */}
+                            {}
                             <div className="chart-legend">
                                 <div className="legend-item">
                                     <span className="legend-color-box bg-blue"></span>

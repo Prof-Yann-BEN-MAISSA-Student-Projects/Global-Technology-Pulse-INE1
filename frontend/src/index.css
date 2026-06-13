@@ -5,7 +5,7 @@
   font-family: 'Inter', -apple-system, sans-serif;
 }
 
-/* Define our Theme Colors */
+
 .dark-theme {
   --bg-color: #0f1115;
   --text-color: #ffffff;
@@ -13,12 +13,12 @@
   --input-bg: #1a1d24;
   --text-muted: #a0aabf;
   
-  /* Chart colors */
-  --chart-1: #93c5fd; /* Lightest Blue */
-  --chart-2: #60a5fa; /* Light Blue */
-  --chart-3: #3b82f6; /* Medium Blue */
-  --chart-4: #2563eb; /* Dark Blue */
-  --chart-5: #1d4ed8; /* Darkest Blue */
+  
+  --chart-1: #93c5fd; 
+  --chart-2: #60a5fa; 
+  --chart-3: #3b82f6; 
+  --chart-4: #2563eb; 
+  --chart-5: #1d4ed8; 
   
   --color-chrome: var(--chart-1);
   --color-safari: var(--chart-2);
@@ -34,7 +34,7 @@
   --input-bg: #ffffff;
   --text-muted: #4b5563;
   
-  /* Chart colors */
+  
   --chart-1: #bfdbfe;
   --chart-2: #93c5fd;
   --chart-3: #60a5fa;
@@ -48,7 +48,7 @@
   --color-other: var(--chart-5);
 }
 
-/* Apply the variables */
+
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -56,7 +56,7 @@
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: all 0.3s ease;
-  /* Makes the color switch smooth */
+  
 }
 
 .navbar {
@@ -94,7 +94,7 @@
   outline: none;
 }
 
-/* New style for our button */
+
 .theme-toggle {
   background: none;
   border: none;
@@ -103,7 +103,7 @@
   color: var(--text-color);
 }
 
-/* Container for the right-side actions */
+
 .action-icons {
   display: flex;
   align-items: center;
@@ -111,7 +111,7 @@
   margin-left: 1rem;
 }
 
-/* GitHub Link Styles */
+
 .github-link {
   display: flex;
   align-items: center;
@@ -126,16 +126,16 @@
   color: var(--text-color);
 }
 
-/* Make sure all our new SVG icons are sized nicely */
+
 .icon {
   font-size: 1.25rem;
 }
 
-/* --- Footer Styles --- */
+
 .footer {
   border-top: 1px solid var(--border-color);
   padding: 4rem 4rem 2rem 4rem;
-  /* This pushes the footer to the bottom even if the page content is short */
+  
   margin-top: auto;
 }
 
@@ -144,11 +144,11 @@
   justify-content: space-between;
   margin-bottom: 3rem;
   flex-wrap: wrap;
-  /* Allows it to stack nicely on smaller screens */
+  
   gap: 2rem;
 }
 
-/* Brand Section */
+
 .footer-brand {
   max-width: 400px;
 }
@@ -174,7 +174,7 @@
   color: var(--text-color);
 }
 
-/* Link Columns */
+
 .footer-links {
   display: flex;
   gap: 5rem;
@@ -203,7 +203,7 @@
   color: var(--text-color);
 }
 
-/* Bottom Copyright Section */
+
 .footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -228,7 +228,7 @@
   color: var(--text-color);
 }
 
-/* --- Hero Section Styles --- */
+
 .hero {
   display: flex;
   flex-direction: column;
@@ -253,7 +253,7 @@
   margin: 0 auto;
 }
 
-/* --- Graph Animation Styles --- */
+
 .hero-graph-container {
   width: 100%;
   max-width: 900px;
@@ -265,11 +265,11 @@
 .pulse-graph {
   width: 100%;
   height: 100%;
-  /* Makes the whole graph slowly float up and down */
+  
   animation: float 6s ease-in-out infinite;
 }
 
-/* The magic trick that draws the line */
+
 .animated-line {
   stroke-dasharray: 2000;
   stroke-dashoffset: 2000;
@@ -280,10 +280,10 @@
   opacity: 0;
   animation: fadeIn 2s ease-in forwards;
   animation-delay: 1.5s;
-  /* Wait for the line to draw halfway before showing gradient */
+  
 }
 
-/* Keyframes define the steps of our animations */
+
 @keyframes drawLine {
   to {
     stroke-dashoffset: 0;
@@ -310,10 +310,10 @@
   }
 }
 
-/* --- Search Bar Styles --- */
+
 .search-container {
   position: relative;
-  /* This allows us to absolute-position the icon inside it */
+  
   display: flex;
   align-items: center;
 }
@@ -321,7 +321,7 @@
 .search-icon {
   position: absolute;
   left: 0.75rem;
-  /* Push it slightly from the left edge */
+  
   color: var(--text-muted);
   font-size: 1.1rem;
 }
@@ -330,16 +330,16 @@
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
-  /* Top/Bottom padding 0.5rem, Right 1rem, Left 2.5rem to make room for the icon! */
+  
   padding: 0.5rem 1rem 0.5rem 2.5rem;
   border-radius: 6px;
   outline: none;
   width: 280px;
-  /* Gives the search bar a nice consistent width */
+  
   transition: border-color 0.2s ease;
 }
 
-/* --- Trending Section Styles --- */
+
 .trending-section {
   padding: 4rem;
   display: flex;
@@ -361,7 +361,7 @@
   color: var(--text-muted);
 }
 
-/* Auto-responsive grid magic! */
+
 .repo-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -370,7 +370,7 @@
   max-width: 1200px;
 }
 
-/* --- Repo Card Styles --- */
+
 .repo-card {
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
@@ -384,7 +384,7 @@
 .repo-card:hover {
   transform: translateY(-5px);
   border-color: #3b82f6;
-  /* Subtle blue glow on hover */
+  
 }
 
 .card-header {
@@ -411,7 +411,7 @@
 
 .trend-badge {
   color: #10b981;
-  /* Green color for positive trend */
+  
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -425,7 +425,7 @@
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;    /* Limite le texte à exactement 3 lignes */
+  -webkit-line-clamp: 3;    
   margin-bottom: 1.5rem;
 }
 
@@ -454,7 +454,7 @@
   gap: 0.3rem;
 }
 
-/* Language Dots */
+
 .repo-lang {
   display: flex;
   align-items: center;
@@ -468,7 +468,7 @@
   display: inline-block;
 }
 
-/* specific colors for specific languages */
+
 .python {
   background-color: #3572A5;
 }
@@ -519,10 +519,10 @@
 
 .search-container input:focus {
   border-color: #3b82f6;
-  /* Adds a nice blue highlight when you click to type */
+  
 }
 
-/* --- Modern Collections Section --- */
+
 .collections-section {
   padding: 6rem 4rem;
   display: flex;
@@ -546,7 +546,7 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background-color: rgba(139, 92, 246, 0.1);
-  /* Subtle purple */
+  
   border: 1px solid rgba(139, 92, 246, 0.2);
   border-radius: 50px;
   margin-bottom: 1rem;
@@ -559,7 +559,7 @@
   color: #eab308;
 }
 
-/* --- The Pop-in Animation --- */
+
 @keyframes fadeInUp {
   0% {
     opacity: 0;
@@ -574,21 +574,21 @@
 
 .fade-in-up {
   opacity: 0;
-  /* Start hidden */
+  
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-/* --- Modern Card Styles --- */
+
 .modern-card {
   position: relative;
   border-radius: 1rem;
   opacity: 0;
-  /* Start hidden for animation */
+  
   animation: fadeInUp 0.5s ease-out forwards;
   cursor: pointer;
 }
 
-/* This creates the soft glow effect behind the card on hover */
+
 .card-glow {
   position: absolute;
   inset: -2px;
@@ -603,7 +603,7 @@
   opacity: 0.4;
 }
 
-/* The actual card container */
+
 .card-content {
   position: relative;
   background-color: var(--bg-color);
@@ -621,8 +621,8 @@
   border-color: transparent;
 }
 
-/* --- Gradient Themes --- */
-/* We define specific gradients for the icons and glows */
+
+
 .theme-purple {
   background: linear-gradient(135deg, #a855f7, #ec4899, #f43f5e);
 }
@@ -662,14 +662,14 @@
   transform: scale(1.1);
 }
 
-/* --- Typography & Layout --- */
+
 .card-text h3 {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
   transition: color 0.3s ease;
 }
 
-/* Nice text gradient on hover */
+
 .modern-card:hover .card-text h3 {
   background: linear-gradient(to right, #a0aabf, #ffffff);
   -webkit-background-clip: text;
@@ -682,7 +682,7 @@
   line-height: 1.5;
   margin-bottom: 1rem;
   height: 42px;
-  /* Keeps consistent height */
+  
 }
 
 .card-stats {
@@ -702,7 +702,7 @@
   align-items: center;
   gap: 0.25rem;
   color: #22c55e;
-  /* Green */
+  
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -740,7 +740,7 @@
   animation: spin 1s linear infinite;
 }
 
-/* --- Pagination Styles --- */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -779,9 +779,9 @@
   cursor: not-allowed;
 }
 
-/* --- Media Queries for Responsiveness --- */
 
-/* For Tablets and Smaller Laptops */
+
+
 @media (max-width: 1024px) {
   .navbar {
     padding: 1.5rem 2rem;
@@ -804,7 +804,7 @@
   }
 }
 
-/* For Mobile Devices */
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
@@ -880,7 +880,7 @@
   }
 }
 
-/* For Extra Small Mobile Devices */
+
 @media (max-width: 480px) {
   .hero-content h1 {
     font-size: 1.8rem;
@@ -901,4 +901,4 @@
   .trending-section, .collections-section {
     padding: 2rem 1rem;
   }
-}
+}

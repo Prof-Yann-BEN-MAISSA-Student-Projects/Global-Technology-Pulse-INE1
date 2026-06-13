@@ -11,11 +11,11 @@ export default function UseCasesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Filtres actuels
+  
   const [domain, setDomain] = useState('');
   const [country, setCountry] = useState('');
 
-  // Scénarios pré-définis (Professionnels)
+  
   const scenarios = [
     {
       title: "Mobile Developer in Morocco",
@@ -168,7 +168,7 @@ export default function UseCasesPage() {
         </select>
       </div>
 
-      {/* Results */}
+      {}
       {loading ? (
         <p style={{ color: '#0ff', fontSize: '1.2rem' }}>Searching recommendations...</p>
       ) : error ? (

@@ -33,7 +33,7 @@ export default function App() {
         <Route path="/usecases" element={<UseCasesPage />} />
       </Routes>
       
-      {/* The Footer stays on every page */}
+      {}
       <Footer />
     </div>
   );

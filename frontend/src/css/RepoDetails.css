@@ -1,6 +1,4 @@
-/* ============================================
-   REPOSITORY OVERVIEW PAGE — Rich Aesthetics
-   ============================================ */
+
 
 .repo-details-page {
     padding: 4rem;
@@ -12,7 +10,7 @@
     gap: 2.5rem;
 }
 
-/* ── Top Navigation / Back Button ────────── */
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -62,7 +60,7 @@
     transform: translateX(4px);
 }
 
-/* ── Overview Header Banner ──────────────── */
+
 .overview-banner {
     background-color: var(--input-bg);
     border: 1px solid var(--border-color);
@@ -156,7 +154,7 @@
     transform: translateY(-2px);
 }
 
-/* ── Dashboard Content Layout (Row) ──────── */
+
 .dashboard-row {
     display: flex;
     flex-direction: row;
@@ -226,7 +224,7 @@
     text-align: center;
 }
 
-/* ── Stats Highlights Banner ─────────────── */
+
 .stats-banner {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -279,7 +277,7 @@
     font-weight: 500;
 }
 
-/* Responsive */
+
 @media (max-width: 640px) {
     .repo-details-page {
         padding: 2rem 1.5rem;

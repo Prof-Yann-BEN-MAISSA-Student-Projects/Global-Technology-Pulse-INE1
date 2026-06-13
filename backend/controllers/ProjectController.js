@@ -25,7 +25,7 @@ async function filterByTags(req, res) {
             query.countryTags = country;
         }
 
-        // Trouver les projets correspondant aux tags et trier par stars
+        
         const projects = await Project.find(query).sort({ stargazers_count: -1 });
         res.status(200).json(projects);
     } catch (erreur) {
@@ -107,7 +107,7 @@ async function getOneProject(req, res) {
             const nouvellesDonnees = await fetchGithubData(nomComplet);
 
             if (nouvellesDonnees) {
-                // Créer et enregistrer le projet dans MongoDB
+                
                 projet = new Project({
                     ...nouvellesDonnees,
                     history: [{
@@ -177,7 +177,7 @@ async function getTrendingProjects(req, res) {
     try {
         console.log("🔥 [API] Récupération des dépôts trending...");
 
-        // 1. Appeler l'API OSSInsight pour obtenir les dépôts hot/trending
+        
         const hotResponse = await axios.get('https://api.ossinsight.io/v1/collections/hot/', {
             headers: { 'Accept': 'application/json' }
         });
@@ -188,7 +188,7 @@ async function getTrendingProjects(req, res) {
 
         const rows = hotResponse.data.data.rows;
 
-        // 2. Extraire les 6 premiers dépôts uniques
+        
         const uniqueRepoNames = [];
         for (const row of rows) {
             if (row.repo_name && !uniqueRepoNames.includes(row.repo_name)) {
@@ -201,7 +201,7 @@ async function getTrendingProjects(req, res) {
 
         console.log("👉 Dépôts trending sélectionnés :", uniqueRepoNames);
 
-        // 3. Récupérer les détails de ces 6 dépôts (depuis la base de données ou GitHub)
+        
         const trendingProjects = [];
         for (const repoName of uniqueRepoNames) {
             let projet = await Project.findOne({ full_name: repoName });
@@ -230,7 +230,7 @@ async function getTrendingProjects(req, res) {
     } catch (err) {
         console.error("❌ Erreur lors de la récupération des dépôts trending :", err.message);
 
-        // En cas d'erreur de l'API externe, fallback sur les 6 premiers dépôts de notre base
+        
         try {
             console.log("⚠️ Fallback sur les dépôts de la base locale...");
             const fallbackProjects = await Project.find().limit(6);
@@ -249,7 +249,7 @@ async function getTrendingPaginated(req, res) {
 
         console.log(`🔥 [API-TrendingPaginated] Récupération page=${page}, limit=${limit}...`);
 
-        // 1. Appeler l'API OSSInsight
+        
         const hotResponse = await axios.get('https://api.ossinsight.io/v1/collections/hot/', {
             headers: { 'Accept': 'application/json' }
         });
@@ -260,7 +260,7 @@ async function getTrendingPaginated(req, res) {
 
         const rows = hotResponse.data.data.rows;
 
-        // 2. Extraire la liste complète des dépôts uniques (environ 60)
+        
         const uniqueRepoNames = [];
         for (const row of rows) {
             if (row.repo_name && !uniqueRepoNames.includes(row.repo_name)) {
@@ -268,21 +268,21 @@ async function getTrendingPaginated(req, res) {
             }
         }
 
-        // 3. Paginer la liste
+        
         const pageRepoNames = uniqueRepoNames.slice(startIndex, startIndex + limit);
         const totalCount = uniqueRepoNames.length;
         const totalPages = Math.ceil(totalCount / limit);
 
         console.log(`👉 Dépôts sélectionnés pour la page ${page} :`, pageRepoNames);
 
-        // 4. Récupérer les détails de ces 10 dépôts
+        
         const trendingProjects = [];
         for (const repoName of pageRepoNames) {
             let projet = await Project.findOne({ full_name: repoName });
 
             if (!projet) {
                 console.log(`🔍 [API-TrendingPaginated] Projet ${repoName} non trouvé en base. Récupération GitHub...`);
-                // Léger délai pour éviter d'être bloqué
+                
                 await new Promise(resolve => setTimeout(resolve, 200));
 
                 const nouvellesDonnees = await fetchGithubData(repoName);
@@ -312,7 +312,7 @@ async function getTrendingPaginated(req, res) {
     } catch (err) {
         console.error("❌ Erreur lors de la récupération des dépôts trending paginés :", err.message);
 
-        // Fallback sur la base locale en cas de problème avec OSSInsight
+        
         try {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;

@@ -58,7 +58,7 @@ export default function CollectionsSection() {
   return (
     <section className="collections-section">
       
-      {/* Animated Header */}
+      {}
       <div className="section-header fade-in-up">
         <div className="badge">
           <FiStar className="icon-yellow" />
@@ -68,7 +68,7 @@ export default function CollectionsSection() {
         <p>Explore trending tech stacks and discover cutting-edge repositories</p>
       </div>
 
-      {/* The Grid with Staggered Animations */}
+      {}
       <div className="collections-grid">
         {collections.map((collection, index) => (
           <div 
@@ -77,16 +77,16 @@ export default function CollectionsSection() {
             onClick={() => navigate(`/collection/${encodeURIComponent(collection.name)}`)}
             style={{ animationDelay: `${index * 0.1}s`, cursor: 'pointer' }} 
           >
-            {/* The colored background glow that appears on hover */}
+            {}
             <div className={`card-glow ${collection.theme}`}></div>
             
             <div className="card-content">
-              {/* Icon Box */}
+              {}
               <div className={`modern-icon-box ${collection.theme}`}>
                 {collection.icon}
               </div>
 
-              {/* Text Content */}
+              {}
               <div className="card-text">
                 <h3>{collection.name}</h3>
                 <p className="description">{collection.description}</p>
@@ -100,7 +100,7 @@ export default function CollectionsSection() {
                 </div>
               </div>
 
-              {/* Footer Action */}
+              {}
               <div className="card-action">
                 <span>Explore collection</span>
                 <FiArrowRight className="arrow" />

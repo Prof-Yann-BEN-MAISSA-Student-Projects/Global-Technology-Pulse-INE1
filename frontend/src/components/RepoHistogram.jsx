@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import '../css/RadarSante.css';
 
 export default function RepoHistogram({ projet }) {
-  // Use 5 repository metrics to form the 5 sectors of the variable pie chart
+  
   const rawData = [
     { name: 'Stars', value: projet?.stargazers_count || 0, color: '#4caefe' },
     { name: 'Forks', value: projet?.forks_count || 0, color: '#3dc3e8' },
@@ -12,15 +12,15 @@ export default function RepoHistogram({ projet }) {
     { name: 'Size (KB)', value: projet?.size || 0, color: '#0ff3a0' }
   ];
 
-  // Scale the radii logarithmically so smaller metrics remain visible while preserving visual distinction
+  
   const maxVal = Math.max(...rawData.map(d => d.value), 1);
   const getRadius = (val) => {
     if (val <= 0) return 25;
     const ratio = Math.log10(val + 1) / Math.log10(maxVal + 1);
-    return 25 + ratio * 65; // maps values to radius bounds [25, 90]
+    return 25 + ratio * 65; 
   };
 
-  // Center angle calculations for 5 sectors (72 degrees each)
+  
   const numSectors = rawData.length;
   const angleSize = 360 / numSectors;
 
@@ -66,7 +66,7 @@ export default function RepoHistogram({ projet }) {
               const endAngle = 90 - (index + 1) * angleSize;
               const radius = getRadius(item.value);
               
-              // Each sector is rendered as a standalone Pie layer with customized outer radius
+              
               const sectorData = [{ name: item.name, value: item.value, color: item.color }];
 
               return (
@@ -84,7 +84,7 @@ export default function RepoHistogram({ projet }) {
                   strokeWidth={2}
                   labelLine={false}
                   label={({ cx, cy, midAngle, innerRadius, outerRadius, name }) => {
-                    // Position labels just outside the edge of each sector
+                    
                     const RADIAN = Math.PI / 180;
                     const radiusOffset = outerRadius + 15;
                     const x = cx + radiusOffset * Math.cos(-midAngle * RADIAN);

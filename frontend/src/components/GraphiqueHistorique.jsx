@@ -7,7 +7,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
   const [ossData, setOssData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch OSSInsight historical data (Issue & PR creators)
+  
   useEffect(() => {
     if (!nomProjet || !nomProjet.includes('/')) return;
     let isMounted = true;
@@ -51,31 +51,31 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
     return () => { isMounted = false; };
   }, [nomProjet]);
 
-  // Priority to OSSInsight data, fallback to database history data
+  
   let dataToRender = [];
   let hasOss = false;
 
   if (ossData && ossData.length >= 2) {
     dataToRender = ossData.map(d => ({
       date: d.date,
-      val1: d.val1, // Issues
-      val2: d.val2, // PRs
+      val1: d.val1, 
+      val2: d.val2, 
       predictedStars: null
     }));
     hasOss = true;
   } else if (donnees && donnees.length >= 2) {
     dataToRender = [...donnees].map(d => ({
       date: d.date ? new Date(d.date).toISOString().split('T')[0] : '',
-      val1: d.stars || d.etoiles || 0, // Stars
-      val2: d.forks || 0,              // Forks
+      val1: d.stars || d.etoiles || 0, 
+      val2: d.forks || 0,              
       predictedStars: null
     })).sort((a, b) => new Date(a.date) - new Date(b.date));
   }
 
-  // Append prediction point
+  
   if (prediction && prediction.predictedStars30d && dataToRender.length >= 2) {
     const latestPoint = dataToRender[dataToRender.length - 1];
-    // Set start of prediction line to match last actual stars
+    
     latestPoint.predictedStars = latestPoint.val1;
 
     try {
@@ -94,11 +94,11 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
     }
   }
 
-  // Calculate dynamic date range text for the footer
+  
   let dateRangeText = "Unknown period";
   if (dataToRender.length >= 2) {
     try {
-      // Ignore the final prediction point for the date range footer text
+      
       const lastActualIndex = prediction && prediction.predictedStars30d ? dataToRender.length - 2 : dataToRender.length - 1;
       const firstDate = new Date(dataToRender[0].date);
       const lastDate = new Date(dataToRender[lastActualIndex].date);
@@ -127,7 +127,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
 
   return (
     <div className="graph-hist flex flex-col" style={{ width: '100%' }}>
-      {/* Header */}
+      {}
       <div style={{ width: '100%', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
         <h3 className="graph-title" style={{ margin: 0, fontSize: '1.25rem', fontWeight: 'bold' }}>
           {hasOss ? (
@@ -144,7 +144,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
         </p>
       </div>
 
-      {/* Area Chart Container */}
+      {}
       <div style={{ width: '100%', height: 260, position: 'relative' }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
@@ -271,7 +271,7 @@ export default function GraphiqueHistorique({ donnees, starsCount, forksCount, n
         </ResponsiveContainer>
       </div>
 
-      {/* Footer */}
+      {}
       <div style={{
         marginTop: '1.25rem',
         paddingTop: '1rem',

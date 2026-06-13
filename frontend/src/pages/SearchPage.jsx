@@ -20,7 +20,7 @@ export default function SearchPage() {
         setIsLoading(true);
         setError(null);
         
-        // Search API with the search term
+        
         const response = await fetch(`http://localhost:2500/api/projects/recherche/${encodeURIComponent(searchTerm)}`);
         
         if (!response.ok) {

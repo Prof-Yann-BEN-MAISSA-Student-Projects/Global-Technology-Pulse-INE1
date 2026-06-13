@@ -1,7 +1,7 @@
-/* DemographicsContainer.css */
+
 
 .demographics-container {
-  /* Glassmorphism */
+  
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -46,12 +46,12 @@
   }
 }
 
-/* --- Animation CSS du Radar --- */
+
 .radar {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  border: 2px solid rgba(0, 255, 255, 0.4); /* Bordure Néon Cyan */
+  border: 2px solid rgba(0, 255, 255, 0.4); 
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.2), inset 0 0 25px rgba(0, 255, 255, 0.2);
@@ -59,7 +59,7 @@
   background-color: rgba(0, 20, 30, 0.4);
 }
 
-/* Le balayage du radar (sweep effect) */
+
 .radar::before {
   content: '';
   position: absolute;
@@ -67,12 +67,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  /* Dégradé conique transparent vers Violet puis Cyan pour le faisceau */
+  
   background: conic-gradient(from 0deg, transparent 70%, rgba(138, 43, 226, 0.4) 95%, rgba(0, 255, 255, 0.9) 100%);
   animation: scan 2s linear infinite;
 }
 
-/* Ligne Horizontale du radar */
+
 .radar::after {
   content: '';
   position: absolute;
@@ -84,7 +84,7 @@
   box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
-/* Ligne Verticale du radar */
+
 .radar-v-line {
   position: absolute;
   top: 0;
@@ -96,7 +96,7 @@
   z-index: 2;
 }
 
-/* Cercle concentrique intérieur */
+
 .radar-circle-inner {
   position: absolute;
   top: 25%;
@@ -104,7 +104,7 @@
   width: 50%;
   height: 50%;
   border-radius: 50%;
-  border: 1px solid rgba(138, 43, 226, 0.5); /* Violet Cyberpunk */
+  border: 1px solid rgba(138, 43, 226, 0.5); 
   box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.2);
   z-index: 2;
 }
@@ -114,10 +114,10 @@
   100% { transform: rotate(360deg); }
 }
 
-/* --- Style du Texte de Console --- */
+
 .console-text {
   font-family: 'Courier New', Courier, monospace;
-  color: #0ff; /* Néon Cyan */
+  color: #0ff; 
   text-shadow: 0 0 5px rgba(0, 255, 255, 0.8), 0 0 15px rgba(0, 255, 255, 0.4);
   font-size: 1rem;
   letter-spacing: 1.5px;
@@ -127,7 +127,7 @@
 
 .sub-text {
   font-size: 0.8rem;
-  color: #b366ff; /* Accent Violet */
+  color: #b366ff; 
   text-shadow: 0 0 5px rgba(138, 43, 226, 0.8);
   opacity: 0.8;
 }
@@ -141,7 +141,7 @@
   50% { opacity: 0; }
 }
 
-/* Placeholder chart (pour la simulation) */
+
 .demographics-chart-placeholder {
   text-align: center;
   color: #fff;
@@ -149,7 +149,7 @@
 
 .chart-title {
   font-weight: 700;
-  color: #0ff; /* Néon Cyan */
+  color: #0ff; 
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
   margin-bottom: 30px;
 }

@@ -2,17 +2,17 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 function DemographicsChart({ data }) {
-    // Si la data n'est pas encore là ou si elle est vide
+    
     if (!data || data.length === 0) {
         return <p style={{ color: '#8892b0' }}>No demographic data available.</p>;
     }
 
-    // On trie pour avoir les plus gros pays en premier, et on ne garde que le Top 5
+    
     const top5Countries = [...data]
         .sort((a, b) => b.count - a.count)
         .slice(0, 5);
 
-    // Un dégradé de couleurs cyber/néon pour tes barres
+    
     const colors = ['#06b6d4', '#3b82f6', '#8b5cf6', '#a855f7', '#d946ef'];
 
     return (

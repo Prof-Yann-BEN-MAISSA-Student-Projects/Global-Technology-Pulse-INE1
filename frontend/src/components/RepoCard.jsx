@@ -6,7 +6,7 @@ function RepoCard({ repo }) {
   const fullName = `${repo.author}/${repo.name}`;
 
   const handleClick = () => {
-    // Navigation propre avec passage d'état pour un rendu instantané
+    
     navigate(`/repo/${encodeURIComponent(fullName)}`, {
       state: {
         projet: {

@@ -13,7 +13,7 @@ import usePrediction from '../hooks/usePrediction';
 import PredictionBadge from '../components/PredictionBadge';
 import '../css/RepoDetails.css';
 
-// Dictionnaire associant les codes ISO 2 des pays à leurs coordonnées centrales (200+ pays)
+
 const countryCoordinates = {
   US: { lat: 37.0902, lng: -95.7129 },
   CN: { lat: 35.8617, lng: 104.1954 },
@@ -44,7 +44,7 @@ const countryCoordinates = {
   NO: { lat: 60.4720, lng: 8.4689 },
   BE: { lat: 50.5039, lng: 4.4699 },
   PL: { lat: 51.9194, lng: 19.1451 },
-  // Extended coverage
+  
   AF: { lat: 33.9391, lng: 67.7100 },
   AL: { lat: 41.1533, lng: 20.1683 },
   DZ: { lat: 28.0339, lng: 1.6596 },
@@ -155,17 +155,17 @@ const countryCoordinates = {
 };
 
 
-// Coordonnées mondiales par défaut pour animer le globe de façon spectaculaire
+
 const defaultHubLocations = [
-  { lat: 37.7749, lng: -122.4194, weight: 0.2 }, // San Francisco
-  { lat: 51.5074, lng: -0.1278, weight: 0.15 },   // London
-  { lat: 35.6762, lng: 139.6503, weight: 0.25 },  // Tokyo
-  { lat: 48.8566, lng: 2.3522, weight: 0.1 },    // Paris
-  { lat: 12.9716, lng: 77.5946, weight: 0.18 },   // Bangalore
-  { lat: -33.8688, lng: 151.2093, weight: 0.08 }, // Sydney
-  { lat: 31.2304, lng: 121.4737, weight: 0.22 },  // Shanghai
-  { lat: 52.5200, lng: 13.4050, weight: 0.12 },   // Berlin
-  { lat: 43.6532, lng: -79.3832, weight: 0.09 },  // Toronto
+  { lat: 37.7749, lng: -122.4194, weight: 0.2 }, 
+  { lat: 51.5074, lng: -0.1278, weight: 0.15 },   
+  { lat: 35.6762, lng: 139.6503, weight: 0.25 },  
+  { lat: 48.8566, lng: 2.3522, weight: 0.1 },    
+  { lat: 12.9716, lng: 77.5946, weight: 0.18 },   
+  { lat: -33.8688, lng: 151.2093, weight: 0.08 }, 
+  { lat: 31.2304, lng: 121.4737, weight: 0.22 },  
+  { lat: 52.5200, lng: 13.4050, weight: 0.12 },   
+  { lat: 43.6532, lng: -79.3832, weight: 0.09 },  
 ];
 
 export default function RepoDetails() {
@@ -174,16 +174,16 @@ export default function RepoDetails() {
   const locationState = useLocation().state;
   const navigate = useNavigate();
 
-  // Initialiser avec les données passées par Link si disponibles, sinon un objet vide
+  
   const [projet, setProjet] = useState(locationState?.projet || null);
   const [loading, setLoading] = useState(!locationState?.projet);
   const { prediction } = usePrediction(decodedFullName);
 
-  // État pour le Globe
+  
   const [coordonnees, setCoordonnees] = useState([]);
   const [globeLoading, setGlobeLoading] = useState(false);
 
-  // 1. Récupération des détails complets du projet
+  
   useEffect(() => {
     const fetchProjectDetails = async () => {
       if (!decodedFullName) return;
@@ -193,7 +193,7 @@ export default function RepoDetails() {
         if (response.data) {
           setProjet(response.data);
         } else {
-          // Fallback au cas où le projet n'est pas encore en base mais on a le nom
+          
           const [author, name] = decodedFullName.split('/');
           setProjet(prev => prev || {
             full_name: decodedFullName,
@@ -209,7 +209,7 @@ export default function RepoDetails() {
         setLoading(false);
       } catch (err) {
         console.error("Erreur de récupération du projet:", err);
-        // Si erreur API, créer un bel objet de secours pour garantir l'affichage
+        
         const [author, name] = decodedFullName.split('/');
         setProjet(prev => prev || {
           full_name: decodedFullName,
@@ -228,7 +228,7 @@ export default function RepoDetails() {
     fetchProjectDetails();
   }, [decodedFullName]);
 
-  // 2. Récupération dynamique des localisations des créateurs d'issues via OSSInsight API
+  
   useEffect(() => {
     const fetchLocations = async () => {
       if (!decodedFullName || !decodedFullName.includes('/')) return;
@@ -278,13 +278,13 @@ export default function RepoDetails() {
     fetchLocations();
   }, [decodedFullName]);
 
-  // Fallback au cas où le globe est vide après l'appel OSSInsight
+  
   const handleDemographicsLoaded = (locations) => {
     setCoordonnees(prev => {
-      // Si le globe n'est pas vide (OSSInsight a marché), on ne touche à rien
+      
       if (prev && prev.length > 0) return prev;
       
-      // Sinon, on utilise la vraie donnée des contributeurs (obtenue via DemographicsContainer)
+      
       const globeData = {};
       locations.forEach(loc => {
         if (!loc.lat || !loc.lon) return;
@@ -354,14 +354,14 @@ export default function RepoDetails() {
         }
   };
 
-  // Clean extraction of author and name
+  
   const [authorName, repoName] = projet.full_name ? projet.full_name.split('/') : ['Author', projet.name || 'Project'];
   const starsCount = projet.stargazers_count !== undefined ? projet.stargazers_count : (projet.stars || 12000);
   const forksCount = projet.forks_count !== undefined ? projet.forks_count : (projet.forks || 1500);
 
   return (
     <div className="repo-details-page">
-      {/* Navigation action */}
+      {}
       <div className="nav-actions">
         <button className="btn-retour" onClick={() => navigate(-1)}>
           <FiArrowLeft /> Back
@@ -385,7 +385,7 @@ export default function RepoDetails() {
         </button>
       </div>
 
-      {/* Overview Banner Header */}
+      {}
       <div className="overview-banner">
         <div className="overview-banner-left">
           {projet.avatar_url ? (
@@ -471,7 +471,7 @@ export default function RepoDetails() {
         </div>
       </div>
 
-      {/* Stats Highlights Banner */}
+      {}
       <div className="stats-banner">
         <div className="stat-item">
           <div className="stat-icon" style={{ background: 'rgba(234, 179, 8, 0.12)', color: '#eab308' }}>
@@ -522,7 +522,7 @@ export default function RepoDetails() {
         </div>
       </div>
 
-      {/* Main Visualisations Row (Graphique D3 vs Globe 3D) */}
+      {}
       <div className='dashboard'>
         <div className="dashboard-row">
           <div className="chart-container">
@@ -548,7 +548,7 @@ export default function RepoDetails() {
                 bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
                 ringsData={coordonnees}
                 ringColor={() => '#3b82f6'}
-                // Taille de l'onde dynamique basée sur le pourcentage de créateurs d'issues de ce pays !
+                
                 ringMaxRadius={d => Math.max(4, Math.min(18, (d.weight || 0.1) * 60))}
                 ringPropagationSpeed={3}
                 ringRepeatPeriod={800}
