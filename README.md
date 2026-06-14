@@ -8,7 +8,7 @@
 
 > A live GitHub analytics platform providing deep insights into the health, momentum, and global reach of open-source repositories — all in one place.
 <br />
-Code contributors : Alaeeddine & ELMARRHOUB Anas
+Code contributors : AMRANI Alaeeddine & ELMARRHOUB Anas
 <br />
 Projet idea, supervision, mentoring and technical coaching : Prof. Yann BEN MAISSA
 <br />
