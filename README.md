@@ -611,7 +611,7 @@ Please follow the [Conventional Commits](https://www.conventionalcommits.org/) s
   </tr>
 </table>
 
-**Supervised by:** Yann Ben Maissa — INPT
+**Projet idea, supervision, mentoring and technical coaching :** Yann Ben Maissa — INPT
 
 ---
 
